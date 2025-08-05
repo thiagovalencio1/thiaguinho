@@ -183,7 +183,7 @@
       'Veículo Entregue'
     ];
 
-    // Função de login
+    // Função de login - DEVE SER window.login
     window.login = function(nome) {
       usuarioLogado = nome;
       userDisplay.textContent = nome;
@@ -226,7 +226,7 @@
             </div>
           `;
 
-          // Corrigindo eventos
+          // Eventos
           card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
             e.stopPropagation();
             if (proximo) mudarStatus(v.placa, proximo);
