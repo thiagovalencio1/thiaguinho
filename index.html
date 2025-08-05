@@ -9,12 +9,12 @@
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
     .col { min-height: 500px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: grab; }
+    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; }
     .card.aprovado { border-left-color: #059669; }
     .card.finalizado { border-left-color: #10b981; }
     .card.entregue { border-left-color: #6b7280; opacity: 0.8; }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-    .modal-content { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 600px; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 50; }
+    .modal-content { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
     .form-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 12px; }
     .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; }
     .btn-blue { background: #2563eb; color: white; }
@@ -23,6 +23,8 @@
     .btn-yellow { background: #d97706; color: white; }
     .evidence-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
     .evidence-preview img, .evidence-preview video { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; }
+    .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
+    .evidence-item { padding: 8px; background: #e0f2fe; border-left: 3px solid #0ea5e9; margin: 4px 0; border-radius: 4px; }
   </style>
 </head>
 <body class="bg-blue-50">
@@ -33,16 +35,16 @@
       <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho</h1>
       <p class="text-gray-600 mb-4">Gestão de Oficina</p>
       <form id="loginForm" class="space-y-4">
-        <select id="usuario" class="form-input" required>
-          <option value="">Seu perfil</option>
-          <option value="gestor">Gestor</option>
-          <option value="mecanico">Mecânico</option>
-          <option value="atendente">Atendente</option>
-        </select>
+        <input type="text" id="usuario" placeholder="Usuário" class="form-input" required />
         <input type="password" id="senha" placeholder="Senha" class="form-input" required />
         <button type="submit" class="w-full btn btn-blue">Entrar</button>
       </form>
-      <p class="text-xs text-gray-500 mt-4">Senha: 123456</p>
+      <p class="text-xs text-gray-500 mt-4">
+        Usuários:<br>
+        gestor (123456)<br>
+        atendente1 (123) | atendente2 (321)<br>
+        mecanico1 (123) | mecanico2 (321) | mecanico3 (456)
+      </p>
     </div>
   </div>
 
@@ -51,7 +53,10 @@
     <header class="bg-blue-800 text-white p-4 shadow">
       <div class="container mx-auto flex justify-between items-center">
         <h1 class="text-2xl font-bold">thIAguinho 🛠️</h1>
-        <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
+        <div class="flex gap-4 items-center">
+          <span id="userDisplay" class="text-sm"></span>
+          <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
+        </div>
       </div>
     </header>
 
@@ -110,49 +115,79 @@
     </div>
   </div>
 
-  <!-- Modal: Coletar Evidências -->
+  <!-- Modal: Enviar Evidências -->
   <div id="evidenceModal" class="modal">
     <div class="modal-content">
-      <h3 class="text-xl font-bold mb-4">📸 Coletar Evidências - <span id="evidencePlaca"></span></h3>
+      <h3 class="text-xl font-bold mb-4">📤 Enviar Evidências - <span id="evidencePlaca"></span></h3>
       <form id="evidenceForm" class="space-y-4">
         <input type="hidden" name="placa" />
-        <textarea required name="falha" placeholder="Descrição da falha" class="form-input" rows="3"></textarea>
-        <textarea required name="pecas" placeholder="Peças necessárias (ex: Amortecedor traseiro)" class="form-input" rows="4"></textarea>
-        <input required name="valor" type="number" step="0.01" placeholder="Valor estimado" class="form-input"/>
+        <textarea name="comentario" placeholder="Comentário (opcional)" class="form-input" rows="3"></textarea>
         <label class="block">
           <span class="text-gray-700">Fotos e Vídeos:</span>
           <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="form-input">
         </label>
         <div id="previewMidias" class="evidence-preview"></div>
         <div class="flex gap-2">
-          <button type="submit" class="btn btn-green">Salvar e Enviar ao Cliente</button>
+          <button type="submit" class="btn btn-green">Enviar Evidências</button>
           <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- Modal: Detalhes do Veículo -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">📋 Detalhes - <span id="detailsPlaca"></span></h3>
+      <div id="detailsContent"></div>
+      <div class="mt-4 flex gap-2">
+        <button id="closeDetailsModal" class="btn btn-red">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const loginScreen = document.getElementById('loginScreen');
     const app = document.getElementById('app');
-    const loginForm = document.getElementById('loginForm');
+    const userDisplay = document.getElementById('userDisplay');
 
-    // Dados locais
-    let veiculos = [
-      { placa: 'ABC1234', modelo: 'Gol 2018', cliente: 'José Silva', telefone: '(11) 99999-8888', responsavel: 'Carlos', observacoes: '', status: 'Aguardando Mecânico', entrada: new Date().toLocaleDateString() }
-    ];
+    // Credenciais
+    const usuarios = {
+      'gestor': '123456',
+      'atendente1': '123',
+      'atendente2': '321',
+      'mecanico1': '123',
+      'mecanico2': '321',
+      'mecanico3': '456'
+    };
+
+    // Dados persistentes
+    let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
+    let colaboradores = JSON.parse(localStorage.getItem('thiaguinho_colaboradores')) || {};
+
+    let usuarioLogado = null;
 
     // Login
-    loginForm.addEventListener('submit', (e) => {
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const user = document.getElementById('usuario').value;
+      const user = document.getElementById('usuario').value.trim();
       const pass = document.getElementById('senha').value;
-      if (pass === '123456') {
+
+      if (usuarios[user] === pass) {
+        usuarioLogado = user;
+        if (!colaboradores[usuarioLogado]) {
+          const nome = prompt('Olá! Qual é o seu nome completo?');
+          if (nome) {
+            colaboradores[usuarioLogado] = { nome, user: usuarioLogado };
+            localStorage.setItem('thiaguinho_colaboradores', JSON.stringify(colaboradores));
+          }
+        }
+        userDisplay.textContent = colaboradores[usuarioLogado]?.nome || user;
         loginScreen.classList.add('hidden');
         app.classList.remove('hidden');
         loadVehicles();
       } else {
-        alert('Senha incorreta. Use 123456');
+        alert('Usuário ou senha incorretos');
       }
     });
 
@@ -160,6 +195,7 @@
     document.getElementById('logoutButton').addEventListener('click', () => {
       app.classList.add('hidden');
       loginScreen.classList.remove('hidden');
+      usuarioLogado = null;
     });
 
     // Carregar veículos
@@ -170,15 +206,13 @@
         if (col) {
           const card = document.createElement('div');
           card.className = `card ${v.status === 'Orçamento Aprovado' ? 'aprovado' : ''} ${v.status === 'Aguardando Retirada' ? 'finalizado' : ''} ${v.status === 'Veículo Entregue' ? 'entregue' : ''}`;
-          card.draggable = true;
           card.dataset.placa = v.placa;
           card.innerHTML = `
             <b>${v.placa}</b> - ${v.modelo}<br>
             <small>Cliente: ${v.cliente}</small><br>
             <small>Resp: ${v.responsavel || '–'}</small>
-            ${v.status === 'Aguardando Mecânico' 
-              ? '<button onclick="startAnalysis(\''+v.placa+'\')" class="mt-1 text-xs bg-yellow-500 text-white px-2 py-1 rounded">Iniciar Análise</button>' 
-              : ''}
+            <button onclick="openDetailsModal('${v.placa}')" class="mt-1 text-xs bg-blue-500 text-white px-2 py-1 rounded">Detalhes</button>
+            <button onclick="openEvidenceModal('${v.placa}')" class="mt-1 text-xs bg-yellow-500 text-white px-2 py-1 rounded ml-1">Evidências</button>
           `;
           col.appendChild(card);
         }
@@ -204,14 +238,63 @@
           e.preventDefault();
           const placa = e.dataTransfer.getData('text/plain');
           const newStatus = col.dataset.status;
-          veiculos = veiculos.map(v => v.placa === placa ? { ...v, status: newStatus } : v);
+          const now = new Date().toLocaleString();
+          const nome = colaboradores[usuarioLogado]?.nome || usuarioLogado;
+
+          veiculos = veiculos.map(v => {
+            if (v.placa === placa && v.status !== newStatus) {
+              v.historico = v.historico || [];
+              v.historico.push({ status: newStatus,  now, nome });
+              v.status = newStatus;
+              // Envia notificação para o gestor
+              sendToWhatsApp(`🚨 *thIAguinho* | ${nome} atualizou o veículo *${placa}* para *${newStatus}*`);
+            }
+            return v;
+          });
+          salvarVeiculos();
           loadVehicles();
         });
       });
     }
 
-    // Botão "Iniciar Análise"
-    window.startAnalysis = function(placa) {
+    // Abrir detalhes
+    window.openDetailsModal = function(placa) {
+      const veiculo = veiculos.find(v => v.placa === placa);
+      if (!veiculo) return;
+
+      document.getElementById('detailsPlaca').textContent = veiculo.placa;
+      const content = document.getElementById('detailsContent');
+      content.innerHTML = `
+        <p><b>Modelo:</b> ${veiculo.modelo}</p>
+        <p><b>Cliente:</b> ${veiculo.cliente}</p>
+        <p><b>Telefone:</b> ${veiculo.telefone}</p>
+        <p><b>Responsável:</b> ${veiculo.responsavel}</p>
+        <p><b>Status:</b> ${veiculo.status}</p>
+        <p><b>Entrada:</b> ${veiculo.entrada}</p>
+        <p><b>Observações:</b> ${veiculo.observacoes || '–'}</p>
+
+        <h4 class="font-bold mt-4">📸 Evidências Anexadas</h4>
+        ${veiculo.evidencias && veiculo.evidencias.length > 0 
+          ? veiculo.evidencias.map(e => `
+            <div class="evidence-item">
+              <b>${e.nome}</b> - ${e.data}<br>
+              <i>${e.comentario || 'Sem comentário'}</i>
+            </div>
+          `).join('')
+          : '<p class="text-gray-500">Nenhuma evidência anexada</p>'
+        }
+
+        <h4 class="font-bold mt-4">🔧 Histórico de Status</h4>
+        ${veiculo.historico && veiculo.historico.length > 0 
+          ? veiculo.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
+          : '<p class="text-gray-500">Sem histórico</p>'
+        }
+      `;
+      document.getElementById('detailsModal').style.display = 'flex';
+    };
+
+    // Abrir modal de evidências
+    window.openEvidenceModal = function(placa) {
       document.getElementById('evidencePlaca').textContent = placa;
       document.getElementById('evidenceForm').placa.value = placa;
       document.getElementById('previewMidias').innerHTML = '';
@@ -230,16 +313,41 @@
       });
     });
 
-    // Salvar evidências
+    // Enviar evidências
     document.getElementById('evidenceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const placa = this.placa.value;
-      alert(`✅ Evidências do veículo ${placa} salvas! As fotos estão na galeria do celular. O cliente foi avisado por WhatsApp.`);
-      veiculos = veiculos.map(v => v.placa === placa ? { ...v, status: 'Orçamento Enviado ao Cliente' } : v);
+      const comentario = this.comentario.value;
+      const midias = Array.from(this.midias.files);
+      const now = new Date().toLocaleString();
+      const nome = colaboradores[usuarioLogado]?.nome || usuarioLogado;
+
+      const veiculo = veiculos.find(v => v.placa === placa);
+      if (veiculo) {
+        veiculo.evidencias = veiculo.evidencias || [];
+        veiculo.evidencias.push({ nome, comentario,  midiasCount: midias.length });
+        veiculo.historico = veiculo.historico || [];
+        veiculo.historico.push({ status: 'Evidência anexada',  now, nome });
+
+        // Envia notificação para o gestor
+        sendToWhatsApp(`📸 *thIAguinho* | ${nome} anexou evidências ao veículo *${placa}*\n💬 ${comentario || 'Sem comentário'}`);
+
+        salvarVeiculos();
+      }
+
+      alert(`✅ Evidências enviadas com sucesso!`);
       document.getElementById('evidenceModal').style.display = 'none';
       this.reset();
       loadVehicles();
     });
+
+    // Função para enviar ao WhatsApp do gestor
+    function sendToWhatsApp(msg) {
+      const url = `https://wa.me/551732249703?text=${encodeURIComponent(msg)}`;
+      // Abre em segundo plano
+      const win = window.open(url, '_blank');
+      if (win) win.close();
+    }
 
     // Fechar modais
     document.getElementById('addBtn').addEventListener('click', () => {
@@ -252,7 +360,10 @@
       const vehicle = Object.fromEntries(fd);
       vehicle.status = 'Aguardando Mecânico';
       vehicle.entrada = new Date().toLocaleDateString();
+      vehicle.historico = [];
+      vehicle.evidencias = [];
       veiculos.push(vehicle);
+      salvarVeiculos();
       this.reset();
       document.getElementById('addModal').style.display = 'none';
       loadVehicles();
@@ -266,14 +377,37 @@
       document.getElementById('evidenceModal').style.display = 'none';
     });
 
-    // Fechar modais ao clicar fora
+    document.getElementById('closeDetailsModal').addEventListener('click', () => {
+      document.getElementById('detailsModal').style.display = 'none';
+    });
+
     window.addEventListener('click', (e) => {
       if (e.target === document.getElementById('addModal')) document.getElementById('addModal').style.display = 'none';
       if (e.target === document.getElementById('evidenceModal')) document.getElementById('evidenceModal').style.display = 'none';
+      if (e.target === document.getElementById('detailsModal')) document.getElementById('detailsModal').style.display = 'none';
     });
 
+    // Salvar no localStorage
+    function salvarVeiculos() {
+      localStorage.setItem('thiaguinho_veiculos', JSON.stringify(veiculos));
+    }
+
     // Carregar
-    loadVehicles();
+    if (veiculos.length === 0) {
+      veiculos.push({
+        placa: 'ABC1234',
+        modelo: 'Gol 2018',
+        cliente: 'José Silva',
+        telefone: '(11) 99999-8888',
+        responsavel: 'Carlos',
+        observacoes: '',
+        status: 'Aguardando Mecânico',
+        entrada: new Date().toLocaleDateString(),
+        historico: [],
+        evidencias: []
+      });
+      salvarVeiculos();
+    }
   </script>
 </body>
 </html>
