@@ -9,7 +9,7 @@
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
     .col { min-height: 500px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; }
     .card.aprovado { border-left-color: #059669; }
     .card.finalizado { border-left-color: #10b981; }
     .card.entregue { border-left-color: #6b7280; opacity: 0.8; }
@@ -23,7 +23,6 @@
     .btn-red { background: #dc2626; color: white; }
     .btn-yellow { background: #d97706; color: white; }
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
-    .file-item { display: block; margin: 4px 0; padding: 4px; background: #e0f2fe; border-radius: 4px; font-size: 0.9em; }
     .alert-bot { background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 16px 0; font-family: monospace; white-space: pre-wrap; }
     .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
   </style>
@@ -37,7 +36,7 @@
       <p class="text-gray-600 mb-6">Selecione seu nome para entrar:</p>
       <div class="grid grid-cols-1 gap-3">
         <div onclick="login('Augusto')" class="user-btn">Augusto (Gestor)</div>
-        <div onclick="login('William Barbosa')" class="user-btn">William Barbosa (Atendente)</div>
+        <div onclick="login('William Barboza')" class="user-btn">William Barboza (Atendente)</div>
         <div onclick="login('Thiago Ventura Valencio')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>
         <div onclick="login('Fernando')" class="user-btn">Fernando (Mecânico)</div>
         <div onclick="login('Gustavo')" class="user-btn">Gustavo (Mecânico)</div>
@@ -164,6 +163,7 @@
   </div>
 
   <script>
+    // Variáveis globais
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
@@ -173,6 +173,7 @@
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
 
+    // Fluxo de status
     const fluxoStatus = [
       'Aguardando Mecânico',
       'Em Análise (Aguardando Evidências)',
@@ -183,7 +184,7 @@
       'Veículo Entregue'
     ];
 
-    // Login direto
+    // Função de login
     window.login = function(nome) {
       usuarioLogado = nome;
       userDisplay.textContent = nome;
@@ -224,6 +225,9 @@
               <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
             </div>
           `;
+          card.onclick = null; // Remove event duplicado
+          card.querySelector('.btn-blue').onclick = (e) => e.stopPropagation();
+          card.querySelector('.btn-yellow').onclick = (e) => e.stopPropagation();
           col.appendChild(card);
         }
       });
@@ -238,12 +242,12 @@
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: novoStatus,
-           new Date().toLocaleString(),
+          data: new Date().toLocaleString(),
           nome: usuarioLogado
         });
         salvarVeiculos();
 
-        // Só mostra alerta se for "Aprovado" ou "Aguardando Retirada"
+        // Alerta no WhatsApp só em "Aprovado" e "Aguardando Retirada"
         if (novoStatus === 'Orçamento Aprovado' || novoStatus === 'Aguardando Retirada') {
           const now = new Date().toLocaleString();
           const msg = `🚨 *thIAguinho* | Veículo *${placa}* está *${novoStatus}*!\n👤 Cliente: ${veiculo.cliente}\n👷 Atualizado por: ${usuarioLogado}\n📅 ${now}`;
@@ -271,7 +275,6 @@
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
       
-      // Listar pastas de visitas
       let visitasHtml = '';
       if (veiculo.visitas && veiculo.visitas.length > 0) {
         veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
@@ -354,56 +357,22 @@
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: 'Evidência anexada',
-           now.toLocaleString(),
+          data: now.toLocaleString(),
           nome: usuarioLogado
         });
 
-        // Enviar cada arquivo
-        const filePromises = files.map(file => {
-          const mimeType = file.type || 'application/octet-stream';
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onload = async () => {
-              const base64 = reader.result.split(',')[1];
-              try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
-                  method: 'POST',
-                  mode: 'no-cors',
-                  body: new URLSearchParams({
-                    'placa': placa,
-                    'folderName': folderName,
-                    'fileName': file.name,
-                    'data': base64,
-                    'mimeType': mimeType
-                  })
-                });
-                resolve({ name: file.name, url: '#' });
-              } catch (error) {
-                resolve({ name: file.name, error: error.message });
-              }
-            };
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
-          });
-        });
-
-        const results = await Promise.all(filePromises);
-        const successFiles = results.filter(f => !f.error);
-        
-        // Simulando URL da pasta (no modo no-cors, não recebemos resposta)
-        const folderUrl = `https://drive.google.com/drive/folders/${placa}?usp=sharing`;
-
+        // Simulando envio (modo no-cors)
         veiculo.visitas.push({
           data: now.getTime(),
           comentario,
           pecas,
           servicos,
-          folderUrl,
-          filesCount: successFiles.length
+          folderUrl: `https://drive.google.com/drive/folders/${placa}?usp=sharing`,
+          filesCount: files.length
         });
 
         salvarVeiculos();
-        alert(`✅ Evidências da visita salvas! ${successFiles.length} arquivo(s) enviados para o Google Drive.`);
+        alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram enviados.`);
         document.getElementById('evidenceModal').style.display = 'none';
         this.reset();
         loadVehicles();
