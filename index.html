@@ -227,19 +227,21 @@
           `;
 
           // Corrigindo eventos
-          card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (proximo) mudarStatus(v.placa, proximo);
-          });
+          setTimeout(() => {
+            card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (proximo) mudarStatus(v.placa, proximo);
+            });
 
-          card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openEvidenceModal(v.placa);
-          });
+            card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openEvidenceModal(v.placa);
+            });
 
-          card.addEventListener('click', () => {
-            openDetailsModal(v.placa);
-          });
+            card.addEventListener('click', () => {
+              openDetailsModal(v.placa);
+            });
+          }, 100);
 
           col.appendChild(card);
         }
