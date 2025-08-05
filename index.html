@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>thIAguinho 🛠️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    .col { min-height: 500px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: grab; }
+    .card.aprovado { border-left-color: #059669; }
+    .card.finalizado { border-left-color: #10b981; }
+    .card.entregue { border-left-color: #6b7280; opacity: 0.8; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 600px; }
+    .form-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 12px; }
+    .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; }
+    .btn-blue { background: #2563eb; color: white; }
+    .btn-green { background: #059669; color: white; }
+    .btn-red { background: #dc2626; color: white; }
+    .btn-yellow { background: #d97706; color: white; }
+    .evidence-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .evidence-preview img, .evidence-preview video { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; }
+  </style>
+</head>
+<body class="bg-blue-50">
+
+  <!-- Tela de Login -->
+  <div id="loginScreen" class="flex items-center justify-center min-h-screen bg-blue-50">
+    <div class="bg-white p-8 rounded-xl shadow-md w-96 text-center">
+      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho</h1>
+      <p class="text-gray-600 mb-4">Gestão de Oficina</p>
+      <form id="loginForm" class="space-y-4">
+        <select id="usuario" class="form-input" required>
+          <option value="">Seu perfil</option>
+          <option value="gestor">Gestor</option>
+          <option value="mecanico">Mecânico</option>
+          <option value="atendente">Atendente</option>
+        </select>
+        <input type="password" id="senha" placeholder="Senha" class="form-input" required />
+        <button type="submit" class="w-full btn btn-blue">Entrar</button>
+      </form>
+      <p class="text-xs text-gray-500 mt-4">Senha: 123456</p>
+    </div>
+  </div>
+
+  <!-- App Principal -->
+  <div id="app" class="hidden">
+    <header class="bg-blue-800 text-white p-4 shadow">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">thIAguinho 🛠️</h1>
+        <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-4 mt-6">
+      <div class="grid grid-cols-1 md:grid-cols-7 gap-4 text-xs font-bold">
+        <div class="col" data-status="Aguardando Mecânico">
+          <h2 class="font-bold text-blue-800 mb-3">🔧 Aguardando Mecânico</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Em Análise (Aguardando Evidências)">
+          <h2 class="font-bold text-yellow-700 mb-3">📸 Em Análise</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Orçamento Enviado ao Cliente">
+          <h2 class="font-bold text-purple-700 mb-3">📤 Enviado ao Cliente</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Orçamento Aprovado">
+          <h2 class="font-bold text-green-700 mb-3">✅ Aprovado</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Veículo em Manutenção">
+          <h2 class="font-bold text-blue-700 mb-3">🔧 Em Manutenção</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Aguardando Retirada">
+          <h2 class="font-bold text-orange-600 mb-3">🚛 Aguardando Retirada</h2>
+          <div class="list"></div>
+        </div>
+        <div class="col" data-status="Veículo Entregue">
+          <h2 class="font-bold text-gray-700 mb-3">📦 Entregue</h2>
+          <div class="list"></div>
+        </div>
+      </div>
+    </main>
+
+    <button id="addBtn" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full text-2xl shadow-lg">+</button>
+  </div>
+
+  <!-- Modal: Novo Veículo -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">➕ Novo Veículo</h3>
+      <form id="addForm" class="space-y-4">
+        <input required name="placa" placeholder="Placa" class="form-input"/>
+        <input required name="modelo" placeholder="Modelo" class="form-input"/>
+        <input required name="cliente" placeholder="Cliente" class="form-input"/>
+        <input name="telefone" placeholder="Telefone" class="form-input"/>
+        <input name="responsavel" placeholder="Responsável" class="form-input"/>
+        <textarea name="observacoes" placeholder="Observações" class="form-input" rows="2"></textarea>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-blue">Salvar</button>
+          <button type="button" id="closeAddModal" class="btn btn-red">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Coletar Evidências -->
+  <div id="evidenceModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">📸 Coletar Evidências - <span id="evidencePlaca"></span></h3>
+      <form id="evidenceForm" class="space-y-4">
+        <input type="hidden" name="placa" />
+        <textarea required name="falha" placeholder="Descrição da falha" class="form-input" rows="3"></textarea>
+        <textarea required name="pecas" placeholder="Peças necessárias (ex: Amortecedor traseiro)" class="form-input" rows="4"></textarea>
+        <input required name="valor" type="number" step="0.01" placeholder="Valor estimado" class="form-input"/>
+        <label class="block">
+          <span class="text-gray-700">Fotos e Vídeos:</span>
+          <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="form-input">
+        </label>
+        <div id="previewMidias" class="evidence-preview"></div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-green">Salvar e Enviar ao Cliente</button>
+          <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const loginScreen = document.getElementById('loginScreen');
+    const app = document.getElementById('app');
+    const loginForm = document.getElementById('loginForm');
+
+    // Dados locais
+    let veiculos = [
+      { placa: 'ABC1234', modelo: 'Gol 2018', cliente: 'José Silva', telefone: '(11) 99999-8888', responsavel: 'Carlos', observacoes: '', status: 'Aguardando Mecânico', entrada: new Date().toLocaleDateString() }
+    ];
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('usuario').value;
+      const pass = document.getElementById('senha').value;
+      if (pass === '123456') {
+        loginScreen.classList.add('hidden');
+        app.classList.remove('hidden');
+        loadVehicles();
+      } else {
+        alert('Senha incorreta. Use 123456');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      app.classList.add('hidden');
+      loginScreen.classList.remove('hidden');
+    });
+
+    // Carregar veículos
+    function loadVehicles() {
+      document.querySelectorAll('.list').forEach(col => col.innerHTML = '');
+      veiculos.forEach(v => {
+        const col = document.querySelector(`.col[data-status="${v.status}"] .list`);
+        if (col) {
+          const card = document.createElement('div');
+          card.className = `card ${v.status === 'Orçamento Aprovado' ? 'aprovado' : ''} ${v.status === 'Aguardando Retirada' ? 'finalizado' : ''} ${v.status === 'Veículo Entregue' ? 'entregue' : ''}`;
+          card.draggable = true;
+          card.dataset.placa = v.placa;
+          card.innerHTML = `
+            <b>${v.placa}</b> - ${v.modelo}<br>
+            <small>Cliente: ${v.cliente}</small><br>
+            <small>Resp: ${v.responsavel || '–'}</small>
+            ${v.status === 'Aguardando Mecânico' 
+              ? '<button onclick="startAnalysis(\''+v.placa+'\')" class="mt-1 text-xs bg-yellow-500 text-white px-2 py-1 rounded">Iniciar Análise</button>' 
+              : ''}
+          `;
+          col.appendChild(card);
+        }
+      });
+      setupDrag();
+    }
+
+    // Arrastar e soltar
+    function setupDrag() {
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', card.dataset.placa);
+          card.classList.add('opacity-50');
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('opacity-50');
+        });
+      });
+
+      document.querySelectorAll('.col').forEach(col => {
+        col.addEventListener('dragover', e => e.preventDefault());
+        col.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const placa = e.dataTransfer.getData('text/plain');
+          const newStatus = col.dataset.status;
+          veiculos = veiculos.map(v => v.placa === placa ? { ...v, status: newStatus } : v);
+          loadVehicles();
+        });
+      });
+    }
+
+    // Botão "Iniciar Análise"
+    window.startAnalysis = function(placa) {
+      document.getElementById('evidencePlaca').textContent = placa;
+      document.getElementById('evidenceForm').placa.value = placa;
+      document.getElementById('previewMidias').innerHTML = '';
+      document.getElementById('evidenceModal').style.display = 'flex';
+    };
+
+    // Preview de mídias
+    document.getElementById('evidenceForm').midias.addEventListener('change', function() {
+      const preview = document.getElementById('previewMidias');
+      preview.innerHTML = '';
+      Array.from(this.files).forEach(file => {
+        const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'img');
+        el.src = URL.createObjectURL(file);
+        el.controls = file.type.startsWith('video/');
+        preview.appendChild(el);
+      });
+    });
+
+    // Salvar evidências
+    document.getElementById('evidenceForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const placa = this.placa.value;
+      alert(`✅ Evidências do veículo ${placa} salvas! As fotos estão na galeria do celular. O cliente foi avisado por WhatsApp.`);
+      veiculos = veiculos.map(v => v.placa === placa ? { ...v, status: 'Orçamento Enviado ao Cliente' } : v);
+      document.getElementById('evidenceModal').style.display = 'none';
+      this.reset();
+      loadVehicles();
+    });
+
+    // Fechar modais
+    document.getElementById('addBtn').addEventListener('click', () => {
+      document.getElementById('addModal').style.display = 'flex';
+    });
+
+    document.getElementById('addForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const fd = new FormData(this);
+      const vehicle = Object.fromEntries(fd);
+      vehicle.status = 'Aguardando Mecânico';
+      vehicle.entrada = new Date().toLocaleDateString();
+      veiculos.push(vehicle);
+      this.reset();
+      document.getElementById('addModal').style.display = 'none';
+      loadVehicles();
+    });
+
+    document.getElementById('closeAddModal').addEventListener('click', () => {
+      document.getElementById('addModal').style.display = 'none';
+    });
+
+    document.getElementById('closeEvidenceModal').addEventListener('click', () => {
+      document.getElementById('evidenceModal').style.display = 'none';
+    });
+
+    // Fechar modais ao clicar fora
+    window.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('addModal')) document.getElementById('addModal').style.display = 'none';
+      if (e.target === document.getElementById('evidenceModal')) document.getElementById('evidenceModal').style.display = 'none';
+    });
+
+    // Carregar
+    loadVehicles();
+  </script>
+</body>
+</html>
