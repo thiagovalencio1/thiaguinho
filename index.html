@@ -25,6 +25,8 @@
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
     .alert-bot { background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 16px 0; font-family: monospace; white-space: pre-wrap; }
     .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
+    .file-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+    .file-preview img, .file-preview video { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
   </style>
 </head>
 <body class="bg-blue-50">
@@ -110,6 +112,17 @@
       <h3 class="text-xl font-bold mb-4">➕ Novo Veículo</h3>
       <form id="addForm" class="space-y-4">
         <input required name="placa" placeholder="Placa" class="w-full p-2 border rounded"/>
+        
+        <label class="block">
+          <span class="text-gray-700">Foto da Placa:</span>
+          <input type="file" name="fotoPlaca" accept="image/*" capture="environment" class="w-full p-2 border rounded mt-1"/>
+        </label>
+        
+        <label class="block">
+          <span class="text-gray-700">Foto do Painel:</span>
+          <input type="file" name="fotoPainel" accept="image/*" capture="environment" class="w-full p-2 border rounded mt-1"/>
+        </label>
+
         <input required name="modelo" placeholder="Modelo" class="w-full p-2 border rounded"/>
         <input required name="cliente" placeholder="Cliente" class="w-full p-2 border rounded"/>
         <input name="telefone" placeholder="Telefone" class="w-full p-2 border rounded"/>
@@ -142,7 +155,7 @@
           <span class="text-gray-700">Fotos e Vídeos:</span>
           <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="w-full p-2 border rounded mt-1"/>
         </label>
-        <div id="previewMidias" class="flex flex-wrap gap-2 mt-2"></div>
+        <div id="previewMidias" class="file-preview mt-2"></div>
         <div class="flex gap-2">
           <button type="submit" class="btn btn-green">Enviar ao Google Drive</button>
           <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
@@ -163,6 +176,7 @@
   </div>
 
   <script>
+    // Variáveis globais
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
@@ -172,6 +186,7 @@
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
 
+    // Fluxo de status
     const fluxoStatus = [
       'Aguardando Mecânico',
       'Em Análise (Aguardando Evidências)',
@@ -210,19 +225,39 @@
         if (col) {
           const card = document.createElement('div');
           card.className = `card ${v.status === 'Orçamento Aprovado' ? 'aprovado' : ''} ${v.status === 'Aguardando Retirada' ? 'finalizado' : ''} ${v.status === 'Veículo Entregue' ? 'entregue' : ''}`;
+          card.dataset.placa = v.placa;
           card.innerHTML = `
             <b>${v.placa}</b> - ${v.modelo}<br>
             <small>Cliente: ${v.cliente}</small><br>
             <small>Resp: ${v.responsavel || '–'}</small>
             <div class="status-nav">
-              ${anterior ? `<button onclick="mudarStatus('${v.placa}', '${anterior}')" class="btn btn-blue text-xs">🔙 Voltar</button>` : `<span></span>`}
-              ${proximo ? `<button onclick="mudarStatus('${v.placa}', '${proximo}')" class="btn btn-blue text-xs">Avançar 🔜</button>` : `<span></span>`}
+              ${anterior ? `<button class="btn btn-blue text-xs">🔙</button>` : `<span></span>`}
+              ${proximo ? `<button class="btn btn-blue text-xs">Avançar 🔜</button>` : `<span></span>`}
             </div>
             <div class="mt-2">
-              <button onclick="openDetailsModal('${v.placa}')" class="btn btn-blue text-xs">Detalhes</button>
-              <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
+              <button class="btn btn-blue text-xs">Detalhes</button>
+              <button class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
             </div>
           `;
+          
+          // Corrigindo eventos
+          setTimeout(() => {
+            card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const novoStatus = proximo;
+              mudarStatus(v.placa, novoStatus);
+            });
+            
+            card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openEvidenceModal(v.placa);
+            });
+            
+            card.addEventListener('click', () => {
+              openDetailsModal(v.placa);
+            });
+          }, 100);
+
           col.appendChild(card);
         }
       });
@@ -230,6 +265,8 @@
 
     // Mudar status
     window.mudarStatus = function(placa, novoStatus) {
+      if (!novoStatus) return;
+      
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo) {
         const oldStatus = veiculo.status;
@@ -242,7 +279,7 @@
         });
         salvarVeiculos();
 
-        // Só mostra alerta se for "Aprovado" ou "Aguardando Retirada"
+        // Alerta no WhatsApp só em "Aprovado" e "Aguardando Retirada"
         if (novoStatus === 'Orçamento Aprovado' || novoStatus === 'Aguardando Retirada') {
           const now = new Date().toLocaleString();
           const msg = `🚨 *thIAguinho* | Veículo *${placa}* está *${novoStatus}*!\n👤 Cliente: ${veiculo.cliente}\n👷 Atualizado por: ${usuarioLogado}\n📅 ${now}`;
@@ -270,7 +307,19 @@
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
       
-      // Listar pastas de visitas
+      // Montar HTML das fotos
+      let fotosHtml = '';
+      if (veiculo.fotoPlaca || veiculo.fotoPainel) {
+        fotosHtml += '<h4 class="font-bold mt-4">📸 Fotos do Veículo</h4>';
+        if (veiculo.fotoPlaca) {
+          fotosHtml += `<p><b>Foto da Placa:</b></p><img src="${veiculo.fotoPlaca}" class="w-full rounded mt-1">`;
+        }
+        if (veiculo.fotoPainel) {
+          fotosHtml += `<p><b>Foto do Painel:</b></p><img src="${veiculo.fotoPainel}" class="w-full rounded mt-1">`;
+        }
+      }
+
+      // Listar visitas
       let visitasHtml = '';
       if (veiculo.visitas && veiculo.visitas.length > 0) {
         veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
@@ -280,8 +329,16 @@
               <p><b>Peças:</b> ${v.pecas || '–'}</p>
               <p><b>Serviços:</b> ${v.servicos || '–'}</p>
               <p><b>Comentário:</b> ${v.comentario || '–'}</p>
-              <p><b>Fotos:</b> <a href="${v.folderUrl}" target="_blank" class="text-blue-600">Ver na pasta (${v.filesCount} arquivos)</a></p>
-            </div>`;
+              ${v.files && v.files.length > 0 ? '<p><b>Mídias:</b></p>' : ''}
+              <div class="file-preview">`;
+          v.files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+              visitasHtml += `<img src="${file.url}" class="w-20 h-20 object-cover rounded">`;
+            } else if (file.type.startsWith('video/')) {
+              visitasHtml += `<video controls class="w-20 h-20 object-cover rounded"><source src="${file.url}"></video>`;
+            }
+          });
+          visitasHtml += `</div></div>`;
         });
       } else {
         visitasHtml = '<p class="text-gray-500">Nenhuma evidência anexada ainda.</p>';
@@ -302,6 +359,7 @@
           : '<p class="text-gray-500">Sem histórico</p>'
         }
 
+        ${fotosHtml}
         <h4 class="font-bold mt-4">📸 Evidências por Visita</h4>
         ${visitasHtml}
       `;
@@ -333,7 +391,7 @@
     });
 
     // Enviar evidências
-    document.getElementById('evidenceForm').addEventListener('submit', async function(e) {
+    document.getElementById('evidenceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const placa = this.placa.value;
       const comentario = this.comentario.value;
@@ -341,11 +399,6 @@
       const servicos = this.servicos.value;
       const files = Array.from(this.midias.files);
       const now = new Date();
-      const folderName = now.getFullYear() + '-' + 
-                         String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                         String(now.getDate()).padStart(2, '0') + '_' + 
-                         String(now.getHours()).padStart(2, '0') + '-' + 
-                         String(now.getMinutes()).padStart(2, '0');
 
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo) {
@@ -357,18 +410,24 @@
           nome: usuarioLogado
         });
 
-        // Simulando envio (modo no-cors)
+        // Salvar arquivos localmente (simulação)
+        const fileObjects = files.map(file => ({
+          name: file.name,
+          type: file.type,
+          url: URL.createObjectURL(file),
+          size: file.size
+        }));
+
         veiculo.visitas.push({
            now.getTime(),
           comentario,
           pecas,
           servicos,
-          folderUrl: `https://drive.google.com/drive/folders/${placa}?usp=sharing`,
-          filesCount: files.length
+          files: fileObjects
         });
 
         salvarVeiculos();
-        alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram enviados.`);
+        alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram anexados.`);
         document.getElementById('evidenceModal').style.display = 'none';
         this.reset();
         loadVehicles();
@@ -388,16 +447,65 @@
     document.getElementById('addForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const fd = new FormData(this);
-      const vehicle = Object.fromEntries(fd);
-      vehicle.status = 'Aguardando Mecânico';
-      vehicle.entrada = new Date().toLocaleDateString();
-      vehicle.historico = [];
-      vehicle.visitas = [];
-      veiculos.push(vehicle);
-      salvarVeiculos();
-      this.reset();
-      document.getElementById('addModal').style.display = 'none';
-      loadVehicles();
+      const vehicle = {
+        placa: fd.get('placa'),
+        modelo: fd.get('modelo'),
+        cliente: fd.get('cliente'),
+        telefone: fd.get('telefone'),
+        responsavel: fd.get('responsavel'),
+        observacoes: fd.get('observacoes'),
+        status: 'Aguardando Mecânico',
+        entrada: new Date().toLocaleDateString(),
+        historico: [],
+        visitas: []
+      };
+
+      // Salvar fotos da placa e painel
+      const fotoPlaca = fd.get('fotoPlaca');
+      const fotoPainel = fd.get('fotoPainel');
+
+      if (fotoPlaca && fotoPlaca.size > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          vehicle.fotoPlaca = e.target.result;
+          veiculos.push(vehicle);
+          salvarVeiculos();
+          document.getElementById('addModal').style.display = 'none';
+          this.reset();
+          loadVehicles();
+        }.bind(this);
+        reader.readAsDataURL(fotoPlaca);
+      } else if (fotoPainel && fotoPainel.size > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          vehicle.fotoPainel = e.target.result;
+          if (fotoPlaca && fotoPlaca.size > 0) {
+            const reader2 = new FileReader();
+            reader2.onload = function(e) {
+              vehicle.fotoPlaca = e.target.result;
+              veiculos.push(vehicle);
+              salvarVeiculos();
+              document.getElementById('addModal').style.display = 'none';
+              this.reset();
+              loadVehicles();
+            }.bind(this);
+            reader2.readAsDataURL(fotoPlaca);
+          } else {
+            veiculos.push(vehicle);
+            salvarVeiculos();
+            document.getElementById('addModal').style.display = 'none';
+            this.reset();
+            loadVehicles();
+          }
+        }.bind(this);
+        reader.readAsDataURL(fotoPainel);
+      } else {
+        veiculos.push(vehicle);
+        salvarVeiculos();
+        document.getElementById('addModal').style.display = 'none';
+        this.reset();
+        loadVehicles();
+      }
     });
 
     // Fechar modais
@@ -434,6 +542,13 @@
         visitas: []
       });
       salvarVeiculos();
+    }
+
+    // Carregar inicial
+    if (!usuarioLogado) {
+      userScreen.classList.remove('hidden');
+    } else {
+      app.classList.remove('hidden');
     }
   </script>
 </body>
