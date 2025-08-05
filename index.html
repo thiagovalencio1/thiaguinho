@@ -23,10 +23,9 @@
     .btn-red { background: #dc2626; color: white; }
     .btn-yellow { background: #d97706; color: white; }
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
-    .alert-bot { background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 16px 0; font-family: monospace; white-space: pre-wrap; }
-    .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
     .file-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
     .file-preview img, .file-preview video { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+    .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
   </style>
 </head>
 <body class="bg-blue-50">
@@ -58,17 +57,6 @@
         </div>
       </div>
     </header>
-
-    <!-- Alerta para o Bot Thiaguinho -->
-    <div id="alertBot" class="container mx-auto p-4 hidden">
-      <div class="alert-bot">
-        <strong>🚨 NOTIFICAÇÃO PARA O BOT THIAGUINHO</strong>
-        <br><br>
-        <span id="alertMessage"></span>
-        <br><br>
-        <button onclick="copyAlert()" class="btn btn-blue">Copiar Mensagem</button>
-      </div>
-    </div>
 
     <main class="container mx-auto p-4 mt-6">
       <div class="grid grid-cols-1 md:grid-cols-7 gap-4 text-xs font-bold">
@@ -157,7 +145,7 @@
         </label>
         <div id="previewMidias" class="file-preview mt-2"></div>
         <div class="flex gap-2">
-          <button type="submit" class="btn btn-green">Enviar ao Google Drive</button>
+          <button type="submit" class="btn btn-green">Salvar Evidências</button>
           <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
         </div>
       </form>
@@ -176,12 +164,10 @@
   </div>
 
   <script>
-    // Variáveis
+    // Variáveis globais
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
-    const alertBot = document.getElementById('alertBot');
-    const alertMessage = document.getElementById('alertMessage');
 
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
@@ -239,24 +225,21 @@
               <button class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
             </div>
           `;
-          
-          // Eventos
-          setTimeout(() => {
-            card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const novoStatus = proximo;
-              mudarStatus(v.placa, novoStatus);
-            });
-            
-            card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
-              e.stopPropagation();
-              openEvidenceModal(v.placa);
-            });
-            
-            card.addEventListener('click', () => {
-              openDetailsModal(v.placa);
-            });
-          }, 100);
+
+          // Corrigindo eventos
+          card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (proximo) mudarStatus(v.placa, proximo);
+          });
+
+          card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEvidenceModal(v.placa);
+          });
+
+          card.addEventListener('click', () => {
+            openDetailsModal(v.placa);
+          });
 
           col.appendChild(card);
         }
@@ -265,11 +248,8 @@
 
     // Mudar status
     window.mudarStatus = function(placa, novoStatus) {
-      if (!novoStatus) return;
-      
       const veiculo = veiculos.find(v => v.placa === placa);
-      if (veiculo) {
-        const oldStatus = veiculo.status;
+      if (veiculo && novoStatus) {
         veiculo.status = novoStatus;
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
@@ -278,25 +258,8 @@
           nome: usuarioLogado
         });
         salvarVeiculos();
-
-        // Alerta no WhatsApp só em "Aprovado" e "Aguardando Retirada"
-        if (novoStatus === 'Orçamento Aprovado' || novoStatus === 'Aguardando Retirada') {
-          const now = new Date().toLocaleString();
-          const msg = `🚨 *thIAguinho* | Veículo *${placa}* está *${novoStatus}*!\n👤 Cliente: ${veiculo.cliente}\n👷 Atualizado por: ${usuarioLogado}\n📅 ${now}`;
-          alertMessage.textContent = msg;
-          alertBot.style.display = 'block';
-        }
-
         loadVehicles();
       }
-    };
-
-    // Copiar mensagem do alerta
-    window.copyAlert = function() {
-      const text = alertMessage.textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        alert('✅ Mensagem copiada! Cole no WhatsApp do gestor.');
-      });
     };
 
     // Abrir detalhes
@@ -306,7 +269,7 @@
 
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
-      
+
       // Montar HTML das fotos
       let fotosHtml = '';
       if (veiculo.fotoPlaca || veiculo.fotoPainel) {
@@ -391,7 +354,7 @@
     });
 
     // Enviar evidências
-    document.getElementById('evidenceForm').addEventListener('submit', async function(e) {
+    document.getElementById('evidenceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const placa = this.placa.value;
       const comentario = this.comentario.value;
@@ -399,11 +362,6 @@
       const servicos = this.servicos.value;
       const files = Array.from(this.midias.files);
       const now = new Date();
-      const folderName = now.getFullYear() + '-' + 
-                         String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                         String(now.getDate()).padStart(2, '0') + '_' + 
-                         String(now.getHours()).padStart(2, '0') + '-' + 
-                         String(now.getMinutes()).padStart(2, '0');
 
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo) {
@@ -415,54 +373,37 @@
           nome: usuarioLogado
         });
 
-        // Enviar cada arquivo para o Google Drive
+        // Salvar arquivos em base64
         const filePromises = files.map(file => {
-          const mimeType = file.type || 'application/octet-stream';
           const reader = new FileReader();
-          return new Promise((resolve) => {
-            reader.onload = async () => {
-              const base64 = reader.result.split(',')[1];
-              try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
-                  method: 'POST',
-                  mode: 'no-cors',
-                  body: new URLSearchParams({
-                    'placa': placa,
-                    'folderName': folderName,
-                    'fileName': file.name,
-                    'data': base64,
-                    'mimeType': mimeType
-                  })
-                });
-                resolve({ name: file.name, success: true });
-              } catch (error) {
-                resolve({ name: file.name, success: false, error: error.message });
-              }
+          return new Promise(resolve => {
+            reader.onload = () => {
+              resolve({
+                name: file.name,
+                type: file.type,
+                url: reader.result,
+                size: file.size
+              });
             };
-            reader.onerror = () => resolve({ name: file.name, success: false });
             reader.readAsDataURL(file);
           });
         });
 
-        const results = await Promise.all(filePromises);
-        const successFiles = results.filter(f => f.success);
-        
-        // Salvar no veículo
-        veiculo.visitas.push({
-           now.getTime(),
-          comentario,
-          pecas,
-          servicos,
-          folderUrl: `https://drive.google.com/drive/folders/${placa}?usp=sharing`,
-          filesCount: successFiles.length,
-          files: successFiles.map(f => ({ name: f.name, url: '#' }))
-        });
+        Promise.all(filePromises).then(fileObjects => {
+          veiculo.visitas.push({
+             now.getTime(),
+            comentario,
+            pecas,
+            servicos,
+            files: fileObjects
+          });
 
-        salvarVeiculos();
-        alert(`✅ Evidências da visita salvas! ${successFiles.length} arquivo(s) enviados para o Google Drive.`);
-        document.getElementById('evidenceModal').style.display = 'none';
-        this.reset();
-        loadVehicles();
+          salvarVeiculos();
+          alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram anexados.`);
+          document.getElementById('evidenceModal').style.display = 'none';
+          this.reset();
+          loadVehicles();
+        });
       }
     });
 
@@ -476,7 +417,7 @@
       document.getElementById('addModal').style.display = 'flex';
     });
 
-    document.getElementById('addForm').addEventListener('submit', async function(e) {
+    document.getElementById('addForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const fd = new FormData(this);
       const vehicle = {
@@ -492,50 +433,18 @@
         visitas: []
       };
 
-      // Salvar fotos da placa e painel no Google Drive
+      // Salvar fotos da placa e painel em base64
       const fotoPlaca = fd.get('fotoPlaca');
       const fotoPainel = fd.get('fotoPainel');
 
       if (fotoPlaca && fotoPlaca.size > 0) {
         const reader = new FileReader();
-        reader.onload = async function(e) {
-          const base64 = e.target.result.split(',')[1];
-          try {
-            await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
-              method: 'POST',
-              mode: 'no-cors',
-              body: new URLSearchParams({
-                'placa': vehicle.placa,
-                'folderName': 'entrada',
-                'fileName': 'foto_placa.jpg',
-                'data': base64,
-                'mimeType': 'image/jpeg'
-              })
-            });
-            vehicle.fotoPlaca = e.target.result;
-          } catch (err) {
-            vehicle.fotoPlaca = e.target.result;
-          }
+        reader.onload = function(e) {
+          vehicle.fotoPlaca = e.target.result;
           if (fotoPainel && fotoPainel.size > 0) {
             const reader2 = new FileReader();
-            reader2.onload = async function(e) {
-              const base64 = e.target.result.split(',')[1];
-              try {
-                await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
-                  method: 'POST',
-                  mode: 'no-cors',
-                  body: new URLSearchParams({
-                    'placa': vehicle.placa,
-                    'folderName': 'entrada',
-                    'fileName': 'foto_painel.jpg',
-                    'data': base64,
-                    'mimeType': 'image/jpeg'
-                  })
-                });
-                vehicle.fotoPainel = e.target.result;
-              } catch (err) {
-                vehicle.fotoPainel = e.target.result;
-              }
+            reader2.onload = function(e) {
+              vehicle.fotoPainel = e.target.result;
               veiculos.push(vehicle);
               salvarVeiculos();
               document.getElementById('addModal').style.display = 'none';
@@ -554,24 +463,8 @@
         reader.readAsDataURL(fotoPlaca);
       } else if (fotoPainel && fotoPainel.size > 0) {
         const reader = new FileReader();
-        reader.onload = async function(e) {
-          const base64 = e.target.result.split(',')[1];
-          try {
-            await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
-              method: 'POST',
-              mode: 'no-cors',
-              body: new URLSearchParams({
-                'placa': vehicle.placa,
-                'folderName': 'entrada',
-                'fileName': 'foto_painel.jpg',
-                'data': base64,
-                'mimeType': 'image/jpeg'
-              })
-            });
-            vehicle.fotoPainel = e.target.result;
-          } catch (err) {
-            vehicle.fotoPainel = e.target.result;
-          }
+        reader.onload = function(e) {
+          vehicle.fotoPainel = e.target.result;
           veiculos.push(vehicle);
           salvarVeiculos();
           document.getElementById('addModal').style.display = 'none';
@@ -625,7 +518,7 @@
     }
 
     // Carregar inicial
-    if (!usuarioLogado) {
+    if (!usuarioLogado && !userScreen.classList.contains('hidden')) {
       userScreen.classList.remove('hidden');
     } else {
       app.classList.remove('hidden');
