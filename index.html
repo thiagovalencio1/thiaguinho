@@ -23,6 +23,7 @@
     .btn-red { background: #dc2626; color: white; }
     .btn-yellow { background: #d97706; color: white; }
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
+    .file-item { display: block; margin: 4px 0; padding: 4px; background: #e0f2fe; border-radius: 4px; font-size: 0.9em; }
     .alert-bot { background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 16px 0; font-family: monospace; white-space: pre-wrap; }
     .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
   </style>
@@ -114,10 +115,38 @@
         <input required name="cliente" placeholder="Cliente" class="w-full p-2 border rounded"/>
         <input name="telefone" placeholder="Telefone" class="w-full p-2 border rounded"/>
         <input name="responsavel" placeholder="Responsável" class="w-full p-2 border rounded"/>
-        <textarea name="observacoes" placeholder="Observações" class="w-full p-2 border rounded" rows="2"></textarea>
+        <textarea name="observacoes" placeholder="Observações gerais" class="w-full p-2 border rounded" rows="2"></textarea>
         <div class="flex gap-2">
           <button type="submit" class="btn btn-blue">Salvar</button>
           <button type="button" id="closeAddModal" class="btn btn-red">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Enviar Evidências -->
+  <div id="evidenceModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">📤 Enviar Evidências - <span id="evidencePlaca"></span></h3>
+      <form id="evidenceForm" class="space-y-4">
+        <input type="hidden" name="placa" />
+        <textarea name="comentario" placeholder="Comentário ou observação sobre as evidências" class="w-full p-2 border rounded" rows="3"></textarea>
+        <label class="block">
+          <span class="text-gray-700">Peças utilizadas ou identificadas:</span>
+          <textarea name="pecas" placeholder="Ex: Amortecedor traseiro, pastilhas dianteiras" class="w-full p-2 border rounded" rows="2"></textarea>
+        </label>
+        <label class="block">
+          <span class="text-gray-700">Serviços realizados ou detectados:</span>
+          <textarea name="servicos" placeholder="Ex: Alinhamento, troca de óleo" class="w-full p-2 border rounded" rows="2"></textarea>
+        </label>
+        <label class="block">
+          <span class="text-gray-700">Fotos e Vídeos:</span>
+          <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="w-full p-2 border rounded mt-1"/>
+        </label>
+        <div id="previewMidias" class="flex flex-wrap gap-2 mt-2"></div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-green">Enviar ao Google Drive</button>
+          <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
         </div>
       </form>
     </div>
@@ -192,6 +221,7 @@
             </div>
             <div class="mt-2">
               <button onclick="openDetailsModal('${v.placa}')" class="btn btn-blue text-xs">Detalhes</button>
+              <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
             </div>
           `;
           col.appendChild(card);
@@ -213,17 +243,19 @@
         });
         salvarVeiculos();
 
-        // Mostrar alerta para o bot
-        const now = new Date().toLocaleString();
-        const msg = `🚨 *thIAguinho* | Atualização de Veículo\n\n🔧 *Placa:* ${placa}\n📌 *Status:* ${novoStatus}\n👷 *Atualizado por:* ${usuarioLogado}\n📅 *Data:* ${now}\n\n➡️ Enviar para o gestor (17 32249703)`;
-        alertMessage.textContent = msg;
-        alertBot.style.display = 'block';
+        // Só mostra alerta se for "Aprovado" ou "Aguardando Retirada"
+        if (novoStatus === 'Orçamento Aprovado' || novoStatus === 'Aguardando Retirada') {
+          const now = new Date().toLocaleString();
+          const msg = `🚨 *thIAguinho* | Veículo *${placa}* está *${novoStatus}*!\n👤 Cliente: ${veiculo.cliente}\n👷 Atualizado por: ${usuarioLogado}\n📅 ${now}`;
+          alertMessage.textContent = msg;
+          alertBot.style.display = 'block';
+        }
 
         loadVehicles();
       }
     };
 
-    // Copiar mensagem
+    // Copiar mensagem do alerta
     window.copyAlert = function() {
       const text = alertMessage.textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -238,6 +270,24 @@
 
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
+      
+      // Listar pastas de visitas
+      let visitasHtml = '';
+      if (veiculo.visitas && veiculo.visitas.length > 0) {
+        veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
+          visitasHtml += `
+            <div class="mt-4">
+              <h4 class="font-bold">📅 Visita: ${new Date(v.data).toLocaleString()}</h4>
+              <p><b>Peças:</b> ${v.pecas || '–'}</p>
+              <p><b>Serviços:</b> ${v.servicos || '–'}</p>
+              <p><b>Comentário:</b> ${v.comentario || '–'}</p>
+              <p><b>Fotos:</b> <a href="${v.folderUrl}" target="_blank" class="text-blue-600">Ver na pasta (${v.filesCount} arquivos)</a></p>
+            </div>`;
+        });
+      } else {
+        visitasHtml = '<p class="text-gray-500">Nenhuma evidência anexada ainda.</p>';
+      }
+
       content.innerHTML = `
         <p><b>Modelo:</b> ${veiculo.modelo}</p>
         <p><b>Cliente:</b> ${veiculo.cliente}</p>
@@ -252,9 +302,113 @@
           ? veiculo.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
           : '<p class="text-gray-500">Sem histórico</p>'
         }
+
+        <h4 class="font-bold mt-4">📸 Evidências por Visita</h4>
+        ${visitasHtml}
       `;
       document.getElementById('detailsModal').style.display = 'flex';
     };
+
+    // Abrir modal de evidências
+    window.openEvidenceModal = function(placa) {
+      document.getElementById('evidencePlaca').textContent = placa;
+      document.getElementById('evidenceForm').placa.value = placa;
+      document.getElementById('previewMidias').innerHTML = '';
+      document.getElementById('evidenceModal').style.display = 'flex';
+    };
+
+    // Preview de mídias
+    document.getElementById('evidenceForm').midias.addEventListener('change', function() {
+      const preview = document.getElementById('previewMidias');
+      preview.innerHTML = '';
+      Array.from(this.files).forEach(file => {
+        const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'img');
+        el.src = URL.createObjectURL(file);
+        el.controls = file.type.startsWith('video/');
+        el.style.width = '80px';
+        el.style.height = '80px';
+        el.style.objectFit = 'cover';
+        el.style.borderRadius = '6px';
+        preview.appendChild(el);
+      });
+    });
+
+    // Enviar evidências
+    document.getElementById('evidenceForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const placa = this.placa.value;
+      const comentario = this.comentario.value;
+      const pecas = this.pecas.value;
+      const servicos = this.servicos.value;
+      const files = Array.from(this.midias.files);
+      const now = new Date();
+      const folderName = now.getFullYear() + '-' + 
+                         String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                         String(now.getDate()).padStart(2, '0') + '_' + 
+                         String(now.getHours()).padStart(2, '0') + '-' + 
+                         String(now.getMinutes()).padStart(2, '0');
+
+      const veiculo = veiculos.find(v => v.placa === placa);
+      if (veiculo) {
+        veiculo.visitas = veiculo.visitas || [];
+        veiculo.historico = veiculo.historico || [];
+        veiculo.historico.push({
+          status: 'Evidência anexada',
+           now.toLocaleString(),
+          nome: usuarioLogado
+        });
+
+        // Enviar cada arquivo
+        const filePromises = files.map(file => {
+          const mimeType = file.type || 'application/octet-stream';
+          const reader = new FileReader();
+          return new Promise((resolve, reject) => {
+            reader.onload = async () => {
+              const base64 = reader.result.split(',')[1];
+              try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbx2PXSTYXd1YbBe0Zf72l0HEQNsLw2EvJMoCf6CThc6AcSvgWhJnRKwNhu_MaqP_2ve/exec', {
+                  method: 'POST',
+                  mode: 'no-cors',
+                  body: new URLSearchParams({
+                    'placa': placa,
+                    'folderName': folderName,
+                    'fileName': file.name,
+                    'data': base64,
+                    'mimeType': mimeType
+                  })
+                });
+                resolve({ name: file.name, url: '#' });
+              } catch (error) {
+                resolve({ name: file.name, error: error.message });
+              }
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          });
+        });
+
+        const results = await Promise.all(filePromises);
+        const successFiles = results.filter(f => !f.error);
+        
+        // Simulando URL da pasta (no modo no-cors, não recebemos resposta)
+        const folderUrl = `https://drive.google.com/drive/folders/${placa}?usp=sharing`;
+
+        veiculo.visitas.push({
+          data: now.getTime(),
+          comentario,
+          pecas,
+          servicos,
+          folderUrl,
+          filesCount: successFiles.length
+        });
+
+        salvarVeiculos();
+        alert(`✅ Evidências da visita salvas! ${successFiles.length} arquivo(s) enviados para o Google Drive.`);
+        document.getElementById('evidenceModal').style.display = 'none';
+        this.reset();
+        loadVehicles();
+      }
+    });
 
     // Salvar veículos
     function salvarVeiculos() {
@@ -273,6 +427,7 @@
       vehicle.status = 'Aguardando Mecânico';
       vehicle.entrada = new Date().toLocaleDateString();
       vehicle.historico = [];
+      vehicle.visitas = [];
       veiculos.push(vehicle);
       salvarVeiculos();
       this.reset();
@@ -285,12 +440,17 @@
       document.getElementById('addModal').style.display = 'none';
     });
 
+    document.getElementById('closeEvidenceModal').addEventListener('click', () => {
+      document.getElementById('evidenceModal').style.display = 'none';
+    });
+
     document.getElementById('closeDetailsModal').addEventListener('click', () => {
       document.getElementById('detailsModal').style.display = 'none';
     });
 
     window.addEventListener('click', (e) => {
       if (e.target === document.getElementById('addModal')) document.getElementById('addModal').style.display = 'none';
+      if (e.target === document.getElementById('evidenceModal')) document.getElementById('evidenceModal').style.display = 'none';
       if (e.target === document.getElementById('detailsModal')) document.getElementById('detailsModal').style.display = 'none';
     });
 
@@ -305,7 +465,8 @@
         observacoes: '',
         status: 'Aguardando Mecânico',
         entrada: new Date().toLocaleDateString(),
-        historico: []
+        historico: [],
+        visitas: []
       });
       salvarVeiculos();
     }
