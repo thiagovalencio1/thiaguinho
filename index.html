@@ -163,7 +163,6 @@
   </div>
 
   <script>
-    // Variáveis globais
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
@@ -173,7 +172,6 @@
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
 
-    // Fluxo de status
     const fluxoStatus = [
       'Aguardando Mecânico',
       'Em Análise (Aguardando Evidências)',
@@ -225,9 +223,6 @@
               <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
             </div>
           `;
-          card.onclick = null; // Remove event duplicado
-          card.querySelector('.btn-blue').onclick = (e) => e.stopPropagation();
-          card.querySelector('.btn-yellow').onclick = (e) => e.stopPropagation();
           col.appendChild(card);
         }
       });
@@ -242,12 +237,12 @@
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: novoStatus,
-          data: new Date().toLocaleString(),
+           new Date().toLocaleString(),
           nome: usuarioLogado
         });
         salvarVeiculos();
 
-        // Alerta no WhatsApp só em "Aprovado" e "Aguardando Retirada"
+        // Só mostra alerta se for "Aprovado" ou "Aguardando Retirada"
         if (novoStatus === 'Orçamento Aprovado' || novoStatus === 'Aguardando Retirada') {
           const now = new Date().toLocaleString();
           const msg = `🚨 *thIAguinho* | Veículo *${placa}* está *${novoStatus}*!\n👤 Cliente: ${veiculo.cliente}\n👷 Atualizado por: ${usuarioLogado}\n📅 ${now}`;
@@ -275,6 +270,7 @@
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
       
+      // Listar pastas de visitas
       let visitasHtml = '';
       if (veiculo.visitas && veiculo.visitas.length > 0) {
         veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
@@ -357,13 +353,13 @@
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: 'Evidência anexada',
-          data: now.toLocaleString(),
+           now.toLocaleString(),
           nome: usuarioLogado
         });
 
         // Simulando envio (modo no-cors)
         veiculo.visitas.push({
-          data: now.getTime(),
+           now.getTime(),
           comentario,
           pecas,
           servicos,
