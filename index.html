@@ -23,7 +23,7 @@
     .btn-red { background: #dc2626; color: white; }
     .btn-yellow { background: #d97706; color: white; }
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
-    .evidence-item { padding: 8px; background: #e0f2fe; border-left: 3px solid #0ea5e9; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
+    .alert-bot { background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 16px 0; font-family: monospace; white-space: pre-wrap; }
     .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
   </style>
 </head>
@@ -56,6 +56,17 @@
         </div>
       </div>
     </header>
+
+    <!-- Alerta para o Bot Thiaguinho -->
+    <div id="alertBot" class="container mx-auto p-4 hidden">
+      <div class="alert-bot">
+        <strong>🚨 NOTIFICAÇÃO PARA O BOT THIAGUINHO</strong>
+        <br><br>
+        <span id="alertMessage"></span>
+        <br><br>
+        <button onclick="copyAlert()" class="btn btn-blue">Copiar Mensagem</button>
+      </div>
+    </div>
 
     <main class="container mx-auto p-4 mt-6">
       <div class="grid grid-cols-1 md:grid-cols-7 gap-4 text-xs font-bold">
@@ -112,26 +123,6 @@
     </div>
   </div>
 
-  <!-- Modal: Enviar Evidências -->
-  <div id="evidenceModal" class="modal">
-    <div class="modal-content">
-      <h3 class="text-xl font-bold mb-4">📤 Enviar Evidências - <span id="evidencePlaca"></span></h3>
-      <form id="evidenceForm" class="space-y-4">
-        <input type="hidden" name="placa" />
-        <textarea name="comentario" placeholder="Comentário (opcional)" class="w-full p-2 border rounded" rows="3"></textarea>
-        <label class="block">
-          <span class="text-gray-700">Fotos e Vídeos:</span>
-          <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="w-full p-2 border rounded mt-1"/>
-        </label>
-        <div id="previewMidias" class="flex flex-wrap gap-2 mt-2"></div>
-        <div class="flex gap-2">
-          <button type="submit" class="btn btn-green">Enviar Evidências</button>
-          <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Modal: Detalhes do Veículo -->
   <div id="detailsModal" class="modal">
     <div class="modal-content">
@@ -147,9 +138,12 @@
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
+    const alertBot = document.getElementById('alertBot');
+    const alertMessage = document.getElementById('alertMessage');
 
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
+
     const fluxoStatus = [
       'Aguardando Mecânico',
       'Em Análise (Aguardando Evidências)',
@@ -160,7 +154,7 @@
       'Veículo Entregue'
     ];
 
-    // Login direto por nome
+    // Login direto
     window.login = function(nome) {
       usuarioLogado = nome;
       userDisplay.textContent = nome;
@@ -180,12 +174,12 @@
     function loadVehicles() {
       document.querySelectorAll('.list').forEach(col => col.innerHTML = '');
       veiculos.forEach(v => {
+        const currentIndex = fluxoStatus.indexOf(v.status);
+        const proximo = currentIndex < fluxoStatus.length - 1 ? fluxoStatus[currentIndex + 1] : null;
+        const anterior = currentIndex > 0 ? fluxoStatus[currentIndex - 1] : null;
+
         const col = document.querySelector(`.col[data-status="${v.status}"] .list`);
         if (col) {
-          const currentIndex = fluxoStatus.indexOf(v.status);
-          const proximo = currentIndex < fluxoStatus.length - 1 ? fluxoStatus[currentIndex + 1] : null;
-          const anterior = currentIndex > 0 ? fluxoStatus[currentIndex - 1] : null;
-
           const card = document.createElement('div');
           card.className = `card ${v.status === 'Orçamento Aprovado' ? 'aprovado' : ''} ${v.status === 'Aguardando Retirada' ? 'finalizado' : ''} ${v.status === 'Veículo Entregue' ? 'entregue' : ''}`;
           card.innerHTML = `
@@ -193,12 +187,11 @@
             <small>Cliente: ${v.cliente}</small><br>
             <small>Resp: ${v.responsavel || '–'}</small>
             <div class="status-nav">
-              ${anterior ? `<button onclick="mudarStatus('${v.placa}', '${anterior}')" class="btn btn-blue text-xs">🔙</button>` : `<span></span>`}
-              ${proximo ? `<button onclick="mudarStatus('${v.placa}', '${proximo}')" class="btn btn-blue text-xs">🔜</button>` : `<span></span>`}
+              ${anterior ? `<button onclick="mudarStatus('${v.placa}', '${anterior}')" class="btn btn-blue text-xs">🔙 Voltar</button>` : `<span></span>`}
+              ${proximo ? `<button onclick="mudarStatus('${v.placa}', '${proximo}')" class="btn btn-blue text-xs">Avançar 🔜</button>` : `<span></span>`}
             </div>
-            <div class="mt-2 flex gap-1">
+            <div class="mt-2">
               <button onclick="openDetailsModal('${v.placa}')" class="btn btn-blue text-xs">Detalhes</button>
-              <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs">Evidências</button>
             </div>
           `;
           col.appendChild(card);
@@ -206,7 +199,7 @@
       });
     }
 
-    // Mudar status (frente ou volta)
+    // Mudar status
     window.mudarStatus = function(placa, novoStatus) {
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo) {
@@ -215,16 +208,27 @@
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: novoStatus,
-          data: new Date().toLocaleString(),
+           new Date().toLocaleString(),
           nome: usuarioLogado
         });
         salvarVeiculos();
 
-        // Envia notificação para o gestor
-        sendToWhatsApp(`🔄 *thIAguinho* | ${usuarioLogado} moveu *${placa}* de *${oldStatus}* para *${novoStatus}*`);
+        // Mostrar alerta para o bot
+        const now = new Date().toLocaleString();
+        const msg = `🚨 *thIAguinho* | Atualização de Veículo\n\n🔧 *Placa:* ${placa}\n📌 *Status:* ${novoStatus}\n👷 *Atualizado por:* ${usuarioLogado}\n📅 *Data:* ${now}\n\n➡️ Enviar para o gestor (17 32249703)`;
+        alertMessage.textContent = msg;
+        alertBot.style.display = 'block';
 
         loadVehicles();
       }
+    };
+
+    // Copiar mensagem
+    window.copyAlert = function() {
+      const text = alertMessage.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Mensagem copiada! Cole no WhatsApp do gestor.');
+      });
     };
 
     // Abrir detalhes
@@ -243,18 +247,7 @@
         <p><b>Entrada:</b> ${veiculo.entrada}</p>
         <p><b>Observações:</b> ${veiculo.observacoes || '–'}</p>
 
-        <h4 class="font-bold mt-4">📸 Evidências</h4>
-        ${veiculo.evidencias && veiculo.evidencias.length > 0 
-          ? veiculo.evidencias.map(e => `
-            <div class="evidence-item">
-              <b>${e.nome}</b> - ${e.data}<br>
-              <i>${e.comentario || 'Sem comentário'}</i>
-            </div>
-          `).join('')
-          : '<p class="text-gray-500">Nenhuma evidência anexada</p>'
-        }
-
-        <h4 class="font-bold mt-4">🔧 Histórico</h4>
+        <h4 class="font-bold mt-4">🔧 Histórico de Status</h4>
         ${veiculo.historico && veiculo.historico.length > 0 
           ? veiculo.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
           : '<p class="text-gray-500">Sem histórico</p>'
@@ -262,73 +255,6 @@
       `;
       document.getElementById('detailsModal').style.display = 'flex';
     };
-
-    // Abrir modal de evidências
-    window.openEvidenceModal = function(placa) {
-      document.getElementById('evidencePlaca').textContent = placa;
-      document.getElementById('evidenceForm').placa.value = placa;
-      document.getElementById('previewMidias').innerHTML = '';
-      document.getElementById('evidenceModal').style.display = 'flex';
-    };
-
-    // Preview de mídias
-    document.getElementById('evidenceForm').midias.addEventListener('change', function() {
-      const preview = document.getElementById('previewMidias');
-      preview.innerHTML = '';
-      Array.from(this.files).forEach(file => {
-        const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'img');
-        el.src = URL.createObjectURL(file);
-        el.controls = file.type.startsWith('video/');
-        el.style.width = '80px';
-        el.style.height = '80px';
-        el.style.objectFit = 'cover';
-        el.style.borderRadius = '6px';
-        preview.appendChild(el);
-      });
-    });
-
-    // Enviar evidências
-    document.getElementById('evidenceForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const placa = this.placa.value;
-      const comentario = this.comentario.value;
-      const midias = Array.from(this.midias.files);
-      const now = new Date().toLocaleString();
-
-      const veiculo = veiculos.find(v => v.placa === placa);
-      if (veiculo) {
-        veiculo.evidencias = veiculo.evidencias || [];
-        veiculo.evidencias.push({ 
-          nome: usuarioLogado, 
-          comentario, 
-          data: now, 
-          midiasCount: midias.length 
-        });
-        veiculo.historico = veiculo.historico || [];
-        veiculo.historico.push({ 
-          status: 'Evidência anexada', 
-          data: now, 
-          nome: usuarioLogado 
-        });
-
-        // Notificação para o gestor
-        sendToWhatsApp(`📸 *thIAguinho* | ${usuarioLogado} anexou evidências ao veículo *${placa}*\n💬 ${comentario || 'Sem comentário'}`);
-
-        salvarVeiculos();
-      }
-
-      alert(`✅ Evidências enviadas!`);
-      document.getElementById('evidenceModal').style.display = 'none';
-      this.reset();
-      loadVehicles();
-    });
-
-    // Enviar notificação via WhatsApp
-    function sendToWhatsApp(msg) {
-      const url = `https://wa.me/551732249703?text=${encodeURIComponent(msg)}`;
-      const win = window.open(url, '_blank');
-      if (win) setTimeout(() => win.close(), 500);
-    }
 
     // Salvar veículos
     function salvarVeiculos() {
@@ -347,7 +273,6 @@
       vehicle.status = 'Aguardando Mecânico';
       vehicle.entrada = new Date().toLocaleDateString();
       vehicle.historico = [];
-      vehicle.evidencias = [];
       veiculos.push(vehicle);
       salvarVeiculos();
       this.reset();
@@ -360,17 +285,12 @@
       document.getElementById('addModal').style.display = 'none';
     });
 
-    document.getElementById('closeEvidenceModal').addEventListener('click', () => {
-      document.getElementById('evidenceModal').style.display = 'none';
-    });
-
     document.getElementById('closeDetailsModal').addEventListener('click', () => {
       document.getElementById('detailsModal').style.display = 'none';
     });
 
     window.addEventListener('click', (e) => {
       if (e.target === document.getElementById('addModal')) document.getElementById('addModal').style.display = 'none';
-      if (e.target === document.getElementById('evidenceModal')) document.getElementById('evidenceModal').style.display = 'none';
       if (e.target === document.getElementById('detailsModal')) document.getElementById('detailsModal').style.display = 'none';
     });
 
@@ -385,8 +305,7 @@
         observacoes: '',
         status: 'Aguardando Mecânico',
         entrada: new Date().toLocaleDateString(),
-        historico: [],
-        evidencias: []
+        historico: []
       });
       salvarVeiculos();
     }
