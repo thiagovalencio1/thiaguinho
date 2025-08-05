@@ -9,7 +9,7 @@
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
     .col { min-height: 500px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; }
+    .card { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
     .card.aprovado { border-left-color: #059669; }
     .card.finalizado { border-left-color: #10b981; }
     .card.entregue { border-left-color: #6b7280; opacity: 0.8; }
@@ -23,8 +23,7 @@
     .btn-red { background: #dc2626; color: white; }
     .btn-yellow { background: #d97706; color: white; }
     .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
-    .file-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
-    .file-preview img, .file-preview video { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+    .evidence-item { padding: 8px; background: #e0f2fe; border-left: 3px solid #0ea5e9; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
     .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
   </style>
 </head>
@@ -37,7 +36,7 @@
       <p class="text-gray-600 mb-6">Selecione seu nome para entrar:</p>
       <div class="grid grid-cols-1 gap-3">
         <div onclick="login('Augusto')" class="user-btn">Augusto (Gestor)</div>
-        <div onclick="login('William Barboza')" class="user-btn">William Barboza (Atendente)</div>
+        <div onclick="login('William Barbosa')" class="user-btn">William Barbosa (Atendente)</div>
         <div onclick="login('Thiago Ventura Valencio')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>
         <div onclick="login('Fernando')" class="user-btn">Fernando (Mecânico)</div>
         <div onclick="login('Gustavo')" class="user-btn">Gustavo (Mecânico)</div>
@@ -100,22 +99,11 @@
       <h3 class="text-xl font-bold mb-4">➕ Novo Veículo</h3>
       <form id="addForm" class="space-y-4">
         <input required name="placa" placeholder="Placa" class="w-full p-2 border rounded"/>
-        
-        <label class="block">
-          <span class="text-gray-700">Foto da Placa:</span>
-          <input type="file" name="fotoPlaca" accept="image/*" capture="environment" class="w-full p-2 border rounded mt-1"/>
-        </label>
-        
-        <label class="block">
-          <span class="text-gray-700">Foto do Painel:</span>
-          <input type="file" name="fotoPainel" accept="image/*" capture="environment" class="w-full p-2 border rounded mt-1"/>
-        </label>
-
         <input required name="modelo" placeholder="Modelo" class="w-full p-2 border rounded"/>
         <input required name="cliente" placeholder="Cliente" class="w-full p-2 border rounded"/>
         <input name="telefone" placeholder="Telefone" class="w-full p-2 border rounded"/>
         <input name="responsavel" placeholder="Responsável" class="w-full p-2 border rounded"/>
-        <textarea name="observacoes" placeholder="Observações gerais" class="w-full p-2 border rounded" rows="2"></textarea>
+        <textarea name="observacoes" placeholder="Observações" class="w-full p-2 border rounded" rows="2"></textarea>
         <div class="flex gap-2">
           <button type="submit" class="btn btn-blue">Salvar</button>
           <button type="button" id="closeAddModal" class="btn btn-red">Cancelar</button>
@@ -130,22 +118,14 @@
       <h3 class="text-xl font-bold mb-4">📤 Enviar Evidências - <span id="evidencePlaca"></span></h3>
       <form id="evidenceForm" class="space-y-4">
         <input type="hidden" name="placa" />
-        <textarea name="comentario" placeholder="Comentário ou observação sobre as evidências" class="w-full p-2 border rounded" rows="3"></textarea>
-        <label class="block">
-          <span class="text-gray-700">Peças utilizadas ou identificadas:</span>
-          <textarea name="pecas" placeholder="Ex: Amortecedor traseiro, pastilhas dianteiras" class="w-full p-2 border rounded" rows="2"></textarea>
-        </label>
-        <label class="block">
-          <span class="text-gray-700">Serviços realizados ou detectados:</span>
-          <textarea name="servicos" placeholder="Ex: Alinhamento, troca de óleo" class="w-full p-2 border rounded" rows="2"></textarea>
-        </label>
+        <textarea name="comentario" placeholder="Comentário (opcional)" class="w-full p-2 border rounded" rows="3"></textarea>
         <label class="block">
           <span class="text-gray-700">Fotos e Vídeos:</span>
           <input type="file" name="midias" accept="image/*,video/*" capture="environment" multiple class="w-full p-2 border rounded mt-1"/>
         </label>
-        <div id="previewMidias" class="file-preview mt-2"></div>
+        <div id="previewMidias" class="flex flex-wrap gap-2 mt-2"></div>
         <div class="flex gap-2">
-          <button type="submit" class="btn btn-green">Salvar Evidências</button>
+          <button type="submit" class="btn btn-green">Enviar Evidências</button>
           <button type="button" id="closeEvidenceModal" class="btn btn-red">Cancelar</button>
         </div>
       </form>
@@ -164,15 +144,12 @@
   </div>
 
   <script>
-    // Variáveis globais
     const userScreen = document.getElementById('userScreen');
     const app = document.getElementById('app');
     const userDisplay = document.getElementById('userDisplay');
 
     let usuarioLogado = null;
     let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
-
-    // Fluxo de status
     const fluxoStatus = [
       'Aguardando Mecânico',
       'Em Análise (Aguardando Evidências)',
@@ -183,7 +160,7 @@
       'Veículo Entregue'
     ];
 
-    // Função de login - DEVE SER window.login
+    // Login direto por nome
     window.login = function(nome) {
       usuarioLogado = nome;
       userDisplay.textContent = nome;
@@ -203,61 +180,49 @@
     function loadVehicles() {
       document.querySelectorAll('.list').forEach(col => col.innerHTML = '');
       veiculos.forEach(v => {
-        const currentIndex = fluxoStatus.indexOf(v.status);
-        const proximo = currentIndex < fluxoStatus.length - 1 ? fluxoStatus[currentIndex + 1] : null;
-        const anterior = currentIndex > 0 ? fluxoStatus[currentIndex - 1] : null;
-
         const col = document.querySelector(`.col[data-status="${v.status}"] .list`);
         if (col) {
+          const currentIndex = fluxoStatus.indexOf(v.status);
+          const proximo = currentIndex < fluxoStatus.length - 1 ? fluxoStatus[currentIndex + 1] : null;
+          const anterior = currentIndex > 0 ? fluxoStatus[currentIndex - 1] : null;
+
           const card = document.createElement('div');
           card.className = `card ${v.status === 'Orçamento Aprovado' ? 'aprovado' : ''} ${v.status === 'Aguardando Retirada' ? 'finalizado' : ''} ${v.status === 'Veículo Entregue' ? 'entregue' : ''}`;
-          card.dataset.placa = v.placa;
           card.innerHTML = `
             <b>${v.placa}</b> - ${v.modelo}<br>
             <small>Cliente: ${v.cliente}</small><br>
             <small>Resp: ${v.responsavel || '–'}</small>
             <div class="status-nav">
-              ${anterior ? `<button class="btn btn-blue text-xs">🔙</button>` : `<span></span>`}
-              ${proximo ? `<button class="btn btn-blue text-xs">Avançar 🔜</button>` : `<span></span>`}
+              ${anterior ? `<button onclick="mudarStatus('${v.placa}', '${anterior}')" class="btn btn-blue text-xs">🔙</button>` : `<span></span>`}
+              ${proximo ? `<button onclick="mudarStatus('${v.placa}', '${proximo}')" class="btn btn-blue text-xs">🔜</button>` : `<span></span>`}
             </div>
-            <div class="mt-2">
-              <button class="btn btn-blue text-xs">Detalhes</button>
-              <button class="btn btn-yellow text-xs mt-1 w-full">Anexar Fotos</button>
+            <div class="mt-2 flex gap-1">
+              <button onclick="openDetailsModal('${v.placa}')" class="btn btn-blue text-xs">Detalhes</button>
+              <button onclick="openEvidenceModal('${v.placa}')" class="btn btn-yellow text-xs">Evidências</button>
             </div>
           `;
-
-          // Eventos
-          card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (proximo) mudarStatus(v.placa, proximo);
-          });
-
-          card.querySelector('.btn-yellow')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openEvidenceModal(v.placa);
-          });
-
-          card.addEventListener('click', () => {
-            openDetailsModal(v.placa);
-          });
-
           col.appendChild(card);
         }
       });
     }
 
-    // Mudar status
+    // Mudar status (frente ou volta)
     window.mudarStatus = function(placa, novoStatus) {
       const veiculo = veiculos.find(v => v.placa === placa);
-      if (veiculo && novoStatus) {
+      if (veiculo) {
+        const oldStatus = veiculo.status;
         veiculo.status = novoStatus;
         veiculo.historico = veiculo.historico || [];
         veiculo.historico.push({
           status: novoStatus,
-           new Date().toLocaleString(),
+          data: new Date().toLocaleString(),
           nome: usuarioLogado
         });
         salvarVeiculos();
+
+        // Envia notificação para o gestor
+        sendToWhatsApp(`🔄 *thIAguinho* | ${usuarioLogado} moveu *${placa}* de *${oldStatus}* para *${novoStatus}*`);
+
         loadVehicles();
       }
     };
@@ -269,44 +234,6 @@
 
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
-
-      // Montar HTML das fotos
-      let fotosHtml = '';
-      if (veiculo.fotoPlaca || veiculo.fotoPainel) {
-        fotosHtml += '<h4 class="font-bold mt-4">📸 Fotos do Veículo</h4>';
-        if (veiculo.fotoPlaca) {
-          fotosHtml += `<p><b>Foto da Placa:</b></p><img src="${veiculo.fotoPlaca}" class="w-full rounded mt-1">`;
-        }
-        if (veiculo.fotoPainel) {
-          fotosHtml += `<p><b>Foto do Painel:</b></p><img src="${veiculo.fotoPainel}" class="w-full rounded mt-1">`;
-        }
-      }
-
-      // Listar visitas
-      let visitasHtml = '';
-      if (veiculo.visitas && veiculo.visitas.length > 0) {
-        veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
-          visitasHtml += `
-            <div class="mt-4">
-              <h4 class="font-bold">📅 Visita: ${new Date(v.data).toLocaleString()}</h4>
-              <p><b>Peças:</b> ${v.pecas || '–'}</p>
-              <p><b>Serviços:</b> ${v.servicos || '–'}</p>
-              <p><b>Comentário:</b> ${v.comentario || '–'}</p>
-              ${v.files && v.files.length > 0 ? '<p><b>Mídias:</b></p>' : ''}
-              <div class="file-preview">`;
-          v.files.forEach(file => {
-            if (file.type.startsWith('image/')) {
-              visitasHtml += `<img src="${file.url}" class="w-20 h-20 object-cover rounded">`;
-            } else if (file.type.startsWith('video/')) {
-              visitasHtml += `<video controls class="w-20 h-20 object-cover rounded"><source src="${file.url}"></video>`;
-            }
-          });
-          visitasHtml += `</div></div>`;
-        });
-      } else {
-        visitasHtml = '<p class="text-gray-500">Nenhuma evidência anexada ainda.</p>';
-      }
-
       content.innerHTML = `
         <p><b>Modelo:</b> ${veiculo.modelo}</p>
         <p><b>Cliente:</b> ${veiculo.cliente}</p>
@@ -316,15 +243,22 @@
         <p><b>Entrada:</b> ${veiculo.entrada}</p>
         <p><b>Observações:</b> ${veiculo.observacoes || '–'}</p>
 
-        <h4 class="font-bold mt-4">🔧 Histórico de Status</h4>
+        <h4 class="font-bold mt-4">📸 Evidências</h4>
+        ${veiculo.evidencias && veiculo.evidencias.length > 0 
+          ? veiculo.evidencias.map(e => `
+            <div class="evidence-item">
+              <b>${e.nome}</b> - ${e.data}<br>
+              <i>${e.comentario || 'Sem comentário'}</i>
+            </div>
+          `).join('')
+          : '<p class="text-gray-500">Nenhuma evidência anexada</p>'
+        }
+
+        <h4 class="font-bold mt-4">🔧 Histórico</h4>
         ${veiculo.historico && veiculo.historico.length > 0 
           ? veiculo.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
           : '<p class="text-gray-500">Sem histórico</p>'
         }
-
-        ${fotosHtml}
-        <h4 class="font-bold mt-4">📸 Evidências por Visita</h4>
-        ${visitasHtml}
       `;
       document.getElementById('detailsModal').style.display = 'flex';
     };
@@ -358,54 +292,43 @@
       e.preventDefault();
       const placa = this.placa.value;
       const comentario = this.comentario.value;
-      const pecas = this.pecas.value;
-      const servicos = this.servicos.value;
-      const files = Array.from(this.midias.files);
-      const now = new Date();
+      const midias = Array.from(this.midias.files);
+      const now = new Date().toLocaleString();
 
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo) {
-        veiculo.visitas = veiculo.visitas || [];
+        veiculo.evidencias = veiculo.evidencias || [];
+        veiculo.evidencias.push({ 
+          nome: usuarioLogado, 
+          comentario, 
+           now, 
+          midiasCount: midias.length 
+        });
         veiculo.historico = veiculo.historico || [];
-        veiculo.historico.push({
-          status: 'Evidência anexada',
-           now.toLocaleString(),
-          nome: usuarioLogado
+        veiculo.historico.push({ 
+          status: 'Evidência anexada', 
+           now, 
+          nome: usuarioLogado 
         });
 
-        // Salvar arquivos em base64
-        const filePromises = files.map(file => {
-          const reader = new FileReader();
-          return new Promise(resolve => {
-            reader.onload = () => {
-              resolve({
-                name: file.name,
-                type: file.type,
-                url: reader.result,
-                size: file.size
-              });
-            };
-            reader.readAsDataURL(file);
-          });
-        });
+        // Notificação para o gestor
+        sendToWhatsApp(`📸 *thIAguinho* | ${usuarioLogado} anexou evidências ao veículo *${placa}*\n💬 ${comentario || 'Sem comentário'}`);
 
-        Promise.all(filePromises).then(fileObjects => {
-          veiculo.visitas.push({
-             now.getTime(),
-            comentario,
-            pecas,
-            servicos,
-            files: fileObjects
-          });
-
-          salvarVeiculos();
-          alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram anexados.`);
-          document.getElementById('evidenceModal').style.display = 'none';
-          this.reset();
-          loadVehicles();
-        });
+        salvarVeiculos();
       }
+
+      alert(`✅ Evidências enviadas!`);
+      document.getElementById('evidenceModal').style.display = 'none';
+      this.reset();
+      loadVehicles();
     });
+
+    // Enviar notificação via WhatsApp
+    function sendToWhatsApp(msg) {
+      const url = `https://wa.me/551732249703?text=${encodeURIComponent(msg)}`;
+      const win = window.open(url, '_blank');
+      if (win) setTimeout(() => win.close(), 500);
+    }
 
     // Salvar veículos
     function salvarVeiculos() {
@@ -420,65 +343,16 @@
     document.getElementById('addForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const fd = new FormData(this);
-      const vehicle = {
-        placa: fd.get('placa'),
-        modelo: fd.get('modelo'),
-        cliente: fd.get('cliente'),
-        telefone: fd.get('telefone'),
-        responsavel: fd.get('responsavel'),
-        observacoes: fd.get('observacoes'),
-        status: 'Aguardando Mecânico',
-        entrada: new Date().toLocaleDateString(),
-        historico: [],
-        visitas: []
-      };
-
-      // Salvar fotos da placa e painel em base64
-      const fotoPlaca = fd.get('fotoPlaca');
-      const fotoPainel = fd.get('fotoPainel');
-
-      if (fotoPlaca && fotoPlaca.size > 0) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          vehicle.fotoPlaca = e.target.result;
-          if (fotoPainel && fotoPainel.size > 0) {
-            const reader2 = new FileReader();
-            reader2.onload = function(e) {
-              vehicle.fotoPainel = e.target.result;
-              veiculos.push(vehicle);
-              salvarVeiculos();
-              document.getElementById('addModal').style.display = 'none';
-              this.reset();
-              loadVehicles();
-            }.bind(this);
-            reader2.readAsDataURL(fotoPainel);
-          } else {
-            veiculos.push(vehicle);
-            salvarVeiculos();
-            document.getElementById('addModal').style.display = 'none';
-            this.reset();
-            loadVehicles();
-          }
-        }.bind(this);
-        reader.readAsDataURL(fotoPlaca);
-      } else if (fotoPainel && fotoPainel.size > 0) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          vehicle.fotoPainel = e.target.result;
-          veiculos.push(vehicle);
-          salvarVeiculos();
-          document.getElementById('addModal').style.display = 'none';
-          this.reset();
-          loadVehicles();
-        }.bind(this);
-        reader.readAsDataURL(fotoPainel);
-      } else {
-        veiculos.push(vehicle);
-        salvarVeiculos();
-        document.getElementById('addModal').style.display = 'none';
-        this.reset();
-        loadVehicles();
-      }
+      const vehicle = Object.fromEntries(fd);
+      vehicle.status = 'Aguardando Mecânico';
+      vehicle.entrada = new Date().toLocaleDateString();
+      vehicle.historico = [];
+      vehicle.evidencias = [];
+      veiculos.push(vehicle);
+      salvarVeiculos();
+      this.reset();
+      document.getElementById('addModal').style.display = 'none';
+      loadVehicles();
     });
 
     // Fechar modais
@@ -512,16 +386,9 @@
         status: 'Aguardando Mecânico',
         entrada: new Date().toLocaleDateString(),
         historico: [],
-        visitas: []
+        evidencias: []
       });
       salvarVeiculos();
-    }
-
-    // Carregar inicial
-    if (!usuarioLogado && !userScreen.classList.contains('hidden')) {
-      userScreen.classList.remove('hidden');
-    } else {
-      app.classList.remove('hidden');
     }
   </script>
 </body>
