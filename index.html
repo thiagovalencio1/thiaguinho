@@ -163,17 +163,6 @@
     </div>
   </div>
 
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg flex items-center space-x-4">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <span class="text-gray-800 font-medium">Carregando...</span>
-    </div>
-  </div>
-
-  <!-- Notification -->
-  <div id="notification" class="notification"></div>
-
   <script>
     // Configuração da API
     const API_CONFIG = {
@@ -188,7 +177,7 @@
     const userDisplay = document.getElementById('userDisplay');
 
     let usuarioLogado = null;
-    let veiculos = [];
+    let veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
 
     // Fluxo de status
     const fluxoStatus = [
@@ -201,7 +190,7 @@
       'Veículo Entregue'
     ];
 
-    // Função de login
+    // Função de login - CORRIGIDA E PRESERVADA
     window.login = function(nome) {
       usuarioLogado = nome;
       userDisplay.textContent = nome;
@@ -217,32 +206,8 @@
       usuarioLogado = null;
     });
 
-    // Carregar veículos do Google Apps Script
-    async function loadVehicles() {
-      showLoading(true);
-      try {
-        const response = await fetch(`${API_CONFIG.baseUrl}?action=getVehicles`);
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        
-        veiculos = data.vehicles || [];
-        renderVehicles();
-      } catch (error) {
-        console.error('Erro ao carregar veículos:', error);
-        showNotification('Erro ao carregar veículos. Usando modo offline.', 'error');
-        // Modo offline como fallback
-        veiculos = JSON.parse(localStorage.getItem('thiaguinho_veiculos')) || [];
-        renderVehicles();
-      } finally {
-        showLoading(false);
-      }
-    }
-
-    // Renderizar veículos
-    function renderVehicles() {
+    // Carregar veículos
+    function loadVehicles() {
       document.querySelectorAll('.list').forEach(col => col.innerHTML = '');
       veiculos.forEach(v => {
         const currentIndex = fluxoStatus.indexOf(v.status);
@@ -268,7 +233,7 @@
             </div>
           `;
 
-          // Eventos
+          // Eventos - SEM setTimeout, DIRETOS
           card.querySelector('.btn-blue')?.addEventListener('click', (e) => {
             e.stopPropagation();
             if (proximo) mudarStatus(v.placa, proximo);
@@ -289,63 +254,28 @@
     }
 
     // Mudar status
-    async function mudarStatus(placa, novoStatus) {
+    window.mudarStatus = function(placa, novoStatus) {
       const veiculo = veiculos.find(v => v.placa === placa);
       if (veiculo && novoStatus) {
-        showLoading(true);
-        try {
-          const response = await fetch(API_CONFIG.baseUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'updateVehicleStatus',
-              id: veiculo.id || placa,
-              status: novoStatus,
-              user: usuarioLogado
-            })
-          });
-          
-          const result = await response.json();
-          if (result.error) throw new Error(result.error);
-
-          // Atualiza local
-          veiculo.status = novoStatus;
-          veiculo.historico = veiculo.historico || [];
-          veiculo.historico.push({
-            status: novoStatus,
-             new Date().toLocaleString(),
-            nome: usuarioLogado
-          });
-          
-          showNotification('Status atualizado com sucesso!', 'success');
-          loadVehicles();
-        } catch (error) {
-          console.error('Erro ao atualizar status:', error);
-          showNotification('Erro ao atualizar status. Tente novamente.', 'error');
-          loadVehicles(); // Recarrega para sincronizar
-        } finally {
-          showLoading(false);
-        }
+        veiculo.status = novoStatus;
+        veiculo.historico = veiculo.historico || [];
+        veiculo.historico.push({
+          status: novoStatus,
+           new Date().toLocaleString(),
+          nome: usuarioLogado
+        });
+        salvarVeiculos();
+        loadVehicles();
       }
-    }
+    };
 
     // Abrir detalhes
-    async function openDetailsModal(placa) {
+    window.openDetailsModal = function(placa) {
       const veiculo = veiculos.find(v => v.placa === placa);
       if (!veiculo) return;
 
       document.getElementById('detailsPlaca').textContent = veiculo.placa;
       const content = document.getElementById('detailsContent');
-
-      // Carregar evidências
-      let evidencias = [];
-      try {
-        const response = await fetch(`${API_CONFIG.baseUrl}?action=getEvidence&vehicleId=${placa}`);
-        const data = await response.json();
-        evidencias = data.evidence || [];
-      } catch (error) {
-        console.error('Erro ao carregar evidências:', error);
-      }
 
       // Montar HTML das fotos
       let fotosHtml = '';
@@ -359,22 +289,29 @@
         }
       }
 
-      // Listar evidências
-      let evidenciasHtml = '';
-      if (evidencias.length > 0) {
-        evidenciasHtml = '<h4 class="font-bold mt-4">📸 Evidências</h4>';
-        evidencias.forEach(e => {
-          evidenciasHtml += `
+      // Listar visitas
+      let visitasHtml = '';
+      if (veiculo.visitas && veiculo.visitas.length > 0) {
+        veiculo.visitas.sort((a, b) => b.data - a.data).forEach(v => {
+          visitasHtml += `
             <div class="mt-4">
-              <p><b>Problema:</b> ${e.problema || '–'}</p>
-              <p><b>Peças:</b> ${e.pecas || '–'}</p>
-              <p><b>Valor:</b> ${e.valor || '–'}</p>
-              <p><b>Data:</b> ${e.data || '–'}</p>
-            </div>
-          `;
+              <h4 class="font-bold">📅 Visita: ${new Date(v.data).toLocaleString()}</h4>
+              <p><b>Peças:</b> ${v.pecas || '–'}</p>
+              <p><b>Serviços:</b> ${v.servicos || '–'}</p>
+              <p><b>Comentário:</b> ${v.comentario || '–'}</p>
+              ${v.files && v.files.length > 0 ? '<p><b>Mídias:</b></p>' : ''}
+              <div class="file-preview">`;
+          v.files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+              visitasHtml += `<img src="${file.url}" class="w-20 h-20 object-cover rounded">`;
+            } else if (file.type.startsWith('video/')) {
+              visitasHtml += `<video controls class="w-20 h-20 object-cover rounded"><source src="${file.url}"></video>`;
+            }
+          });
+          visitasHtml += `</div></div>`;
         });
       } else {
-        evidenciasHtml = '<p class="text-gray-500 mt-4">Nenhuma evidência anexada.</p>';
+        visitasHtml = '<p class="text-gray-500">Nenhuma evidência anexada ainda.</p>';
       }
 
       content.innerHTML = `
@@ -383,7 +320,7 @@
         <p><b>Telefone:</b> ${veiculo.telefone}</p>
         <p><b>Responsável:</b> ${veiculo.responsavel}</p>
         <p><b>Status:</b> ${veiculo.status}</p>
-        <p><b>Entrada:</b> ${veiculo.dataEntrada}</p>
+        <p><b>Entrada:</b> ${veiculo.entrada}</p>
         <p><b>Observações:</b> ${veiculo.observacoes || '–'}</p>
 
         <h4 class="font-bold mt-4">🔧 Histórico de Status</h4>
@@ -393,18 +330,19 @@
         }
 
         ${fotosHtml}
-        ${evidenciasHtml}
+        <h4 class="font-bold mt-4">📸 Evidências por Visita</h4>
+        ${visitasHtml}
       `;
       document.getElementById('detailsModal').style.display = 'flex';
-    }
+    };
 
     // Abrir modal de evidências
-    function openEvidenceModal(placa) {
+    window.openEvidenceModal = function(placa) {
       document.getElementById('evidencePlaca').textContent = placa;
       document.getElementById('evidenceForm').placa.value = placa;
       document.getElementById('previewMidias').innerHTML = '';
       document.getElementById('evidenceModal').style.display = 'flex';
-    }
+    };
 
     // Preview de mídias
     document.getElementById('evidenceForm').midias.addEventListener('change', function() {
@@ -423,53 +361,73 @@
     });
 
     // Enviar evidências
-    document.getElementById('evidenceForm').addEventListener('submit', async function(e) {
+    document.getElementById('evidenceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const placa = this.placa.value;
       const comentario = this.comentario.value;
       const pecas = this.pecas.value;
       const servicos = this.servicos.value;
       const files = Array.from(this.midias.files);
+      const now = new Date();
 
-      showLoading(true);
-      try {
-        const formData = new FormData();
-        files.forEach(file => formData.append('files', file));
-        
-        // Aqui você precisaria de um endpoint para upload no Drive
-        // Por enquanto, salva no histórico
-        const veiculo = veiculos.find(v => v.placa === placa);
-        if (veiculo) {
-          veiculo.historico = veiculo.historico || [];
-          veiculo.historico.push({
-            status: 'Evidência anexada',
-             new Date().toLocaleString(),
-            nome: usuarioLogado
+      const veiculo = veiculos.find(v => v.placa === placa);
+      if (veiculo) {
+        veiculo.visitas = veiculo.visitas || [];
+        veiculo.historico = veiculo.historico || [];
+        veiculo.historico.push({
+          status: 'Evidência anexada',
+           now.toLocaleString(),
+          nome: usuarioLogado
+        });
+
+        // Salvar arquivos em base64
+        const filePromises = files.map(file => {
+          const reader = new FileReader();
+          return new Promise(resolve => {
+            reader.onload = () => {
+              resolve({
+                name: file.name,
+                type: file.type,
+                url: reader.result,
+                size: file.size
+              });
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+
+        Promise.all(filePromises).then(fileObjects => {
+          veiculo.visitas.push({
+             now.getTime(),
+            comentario,
+            pecas,
+            servicos,
+            files: fileObjects
           });
 
-          showNotification(`✅ Evidências salvas! ${files.length} arquivo(s) anexados.`);
+          salvarVeiculos();
+          alert(`✅ Evidências da visita salvas! ${files.length} arquivo(s) foram anexados.`);
           document.getElementById('evidenceModal').style.display = 'none';
           this.reset();
           loadVehicles();
-        }
-      } catch (error) {
-        console.error('Erro ao enviar evidências:', error);
-        showNotification('Erro ao salvar evidências.', 'error');
-      } finally {
-        showLoading(false);
+        });
       }
     });
+
+    // Salvar veículos
+    function salvarVeiculos() {
+      localStorage.setItem('thiaguinho_veiculos', JSON.stringify(veiculos));
+    }
 
     // Adicionar veículo
     document.getElementById('addBtn').addEventListener('click', () => {
       document.getElementById('addModal').style.display = 'flex';
     });
 
-    document.getElementById('addForm').addEventListener('submit', async function(e) {
+    document.getElementById('addForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const fd = new FormData(this);
-      const vehicleData = {
-        action: 'addVehicle',
+      const vehicle = {
         placa: fd.get('placa'),
         modelo: fd.get('modelo'),
         cliente: fd.get('cliente'),
@@ -477,31 +435,56 @@
         responsavel: fd.get('responsavel'),
         observacoes: fd.get('observacoes'),
         status: 'Aguardando Mecânico',
-        dataEntrada: new Date().toISOString(),
-        ultimaAtualizacao: new Date().toISOString(),
-        user: usuarioLogado
+        entrada: new Date().toLocaleDateString(),
+        historico: [],
+        visitas: []
       };
 
-      showLoading(true);
-      try {
-        const response = await fetch(API_CONFIG.baseUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(vehicleData)
-        });
-        
-        const result = await response.json();
-        if (result.error) throw new Error(result.error);
+      // Salvar fotos da placa e painel em base64
+      const fotoPlaca = fd.get('fotoPlaca');
+      const fotoPainel = fd.get('fotoPainel');
 
-        showNotification('✅ Veículo adicionado com sucesso!', 'success');
+      if (fotoPlaca && fotoPlaca.size > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          vehicle.fotoPlaca = e.target.result;
+          if (fotoPainel && fotoPainel.size > 0) {
+            const reader2 = new FileReader();
+            reader2.onload = function(e) {
+              vehicle.fotoPainel = e.target.result;
+              veiculos.push(vehicle);
+              salvarVeiculos();
+              document.getElementById('addModal').style.display = 'none';
+              this.reset();
+              loadVehicles();
+            }.bind(this);
+            reader2.readAsDataURL(fotoPainel);
+          } else {
+            veiculos.push(vehicle);
+            salvarVeiculos();
+            document.getElementById('addModal').style.display = 'none';
+            this.reset();
+            loadVehicles();
+          }
+        }.bind(this);
+        reader.readAsDataURL(fotoPlaca);
+      } else if (fotoPainel && fotoPainel.size > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          vehicle.fotoPainel = e.target.result;
+          veiculos.push(vehicle);
+          salvarVeiculos();
+          document.getElementById('addModal').style.display = 'none';
+          this.reset();
+          loadVehicles();
+        }.bind(this);
+        reader.readAsDataURL(fotoPainel);
+      } else {
+        veiculos.push(vehicle);
+        salvarVeiculos();
         document.getElementById('addModal').style.display = 'none';
         this.reset();
         loadVehicles();
-      } catch (error) {
-        console.error('Erro ao adicionar veículo:', error);
-        showNotification('Erro ao salvar veículo. Tente novamente.', 'error');
-      } finally {
-        showLoading(false);
       }
     });
 
@@ -518,22 +501,6 @@
       document.getElementById('detailsModal').style.display = 'none';
     });
 
-    // Overlay de carregamento
-    function showLoading(show) {
-      document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
-    }
-
-    // Notificações
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.className = `notification ${type}`;
-      notification.style.display = 'block';
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 3000);
-    }
-
     window.addEventListener('click', (e) => {
       if (e.target === document.getElementById('addModal')) document.getElementById('addModal').style.display = 'none';
       if (e.target === document.getElementById('evidenceModal')) document.getElementById('evidenceModal').style.display = 'none';
@@ -541,8 +508,27 @@
     });
 
     // Inicializar
+    if (veiculos.length === 0) {
+      veiculos.push({
+        placa: 'ABC1234',
+        modelo: 'Gol 2018',
+        cliente: 'José Silva',
+        telefone: '(11) 99999-8888',
+        responsavel: 'Carlos',
+        observacoes: '',
+        status: 'Aguardando Mecânico',
+        entrada: new Date().toLocaleDateString(),
+        historico: [],
+        visitas: []
+      });
+      salvarVeiculos();
+    }
+
+    // Carregar inicial
     if (!usuarioLogado && !userScreen.classList.contains('hidden')) {
       userScreen.classList.remove('hidden');
+    } else {
+      app.classList.remove('hidden');
     }
   </script>
 </body>
