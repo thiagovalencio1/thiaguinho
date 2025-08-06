@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>thIAguinho 🛠️ - Dashboard Oficina</title>  <script src="https://cdn.tailwindcss.com"></script>
+  <title>thIAguinho 🛠️ - Dashboard Oficina</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
     body {
-      font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100% );
       min-height: 100vh;
     }
@@ -190,9 +191,17 @@
 
   <!-- Tela de Seleção de Usuário -->
   <div id="userScreen" class="flex items-center justify-center min-h-screen bg-blue-50 p-4">
-    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-center">      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho 🛠️</h1>
+    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-center">
+      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho 🛠️</h1>
       <p class="text-gray-600 mb-6">Selecione seu nome para entrar:</p>
-      <div class="grid grid-cols-1 gap-3">        <div onclick="window.login(\'Augusto\')" class="user-btn">Augusto (Gestor)</div>        <div onclick="window.login(\'William Barbosa\')" class="user-btn">William Barbosa (Atendente)</div>        <div onclick="window.login(\'Thiago Ventura Valencio\')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>        <div onclick="window.login(\'Fernando\')" class="user-btn">Fernando (Mecânico)<        <div onclick="window.login(\'Gustavo\')" class="user-btn">Gustavo (Mecânico)</div>        <div onclick="window.login(\'Marcelo\')" class="user-btn">Marcelo (Mecânico)</div>      </div>
+      <div class="grid grid-cols-1 gap-3">
+        <div onclick="window.login('Augusto')" class="user-btn">Augusto (Gestor)</div>
+        <div onclick="window.login('William Barbosa')" class="user-btn">William Barbosa (Atendente)</div>
+        <div onclick="window.login('Thiago Ventura Valencio')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>
+        <div onclick="window.login('Fernando')" class="user-btn">Fernando (Mecânico)</div>
+        <div onclick="window.login('Gustavo')" class="user-btn">Gustavo (Mecânico)</div>
+        <div onclick="window.login('Marcelo')" class="user-btn">Marcelo (Mecânico)</div>
+      </div>
     </div>
   </div>
 
@@ -202,30 +211,30 @@
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <i class=\'bx bx-wrench text-3xl text-blue-600\'></i>
+                    <i class='bx bx-wrench text-3xl text-blue-600'></i>
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800">Dashboard Oficina</h1>
                         <p class="text-sm text-gray-600">Sistema de Gestão de Veículos</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="connection-status demo" id="connectionStatus">
-                        <i class=\'bx bx-info-circle mr-1\'></i>
-                        Modo Demonstração
+                    <div class="connection-status connected" id="connectionStatus">
+                        <i class='bx bx-check-circle mr-1'></i>
+                        Conectado
                     </div>
                     <div class="text-right">
                         <p class="text-sm text-gray-600">Última atualização</p>
                         <p id="lastUpdate" class="text-sm font-semibold text-gray-800">--:--</p>
                     </div>
                     <button id="refreshBtn" class="btn bg-blue-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class=\'bx bx-refresh\'></i>
+                        <i class='bx bx-refresh'></i>
                         <span>Atualizar</span>
                     </button>
                     <button id="addVehicleBtn" class="btn bg-green-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class=\'bx bx-plus\'></i>
+                        <i class='bx bx-plus'></i>
                         <span>Novo Veículo</span>
                     </button>
-                    <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
+                    <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white">Sair</button>
                 </div>
             </div>
         </div>
@@ -271,7 +280,7 @@
                 <div class="status-column" data-status="Aguardando Mecânico">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-time-five text-yellow-500 mr-2\'></i>
+                            <i class='bx bx-time-five text-yellow-500 mr-2'></i>
                             Aguardando Mecânico
                         </h3>
                     </div>
@@ -282,7 +291,7 @@
                 <div class="status-column" data-status="Em Análise (Aguardando Evidências)">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-search text-purple-500 mr-2\'></i>
+                            <i class='bx bx-search text-purple-500 mr-2'></i>
                             Em Análise
                         </h3>
                     </div>
@@ -293,7 +302,7 @@
                 <div class="status-column" data-status="Orçamento Enviado ao Cliente">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-send text-cyan-500 mr-2\'></i>
+                            <i class='bx bx-send text-cyan-500 mr-2'></i>
                             Orçamento Enviado
                         </h3>
                     </div>
@@ -304,7 +313,7 @@
                 <div class="status-column" data-status="Orçamento Aprovado">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-check-circle text-green-500 mr-2\'></i>
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Aprovado
                         </h3>
                     </div>
@@ -315,7 +324,7 @@
                 <div class="status-column" data-status="Veículo em Manutenção">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-wrench text-red-500 mr-2\'></i>
+                            <i class='bx bx-wrench text-red-500 mr-2'></i>
                             Em Manutenção
                         </h3>
                     </div>
@@ -326,7 +335,7 @@
                 <div class="status-column" data-status="Aguardando Retirada">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-package text-orange-500 mr-2\'></i>
+                            <i class='bx bx-package text-orange-500 mr-2'></i>
                             Aguardando Retirada
                         </h3>
                     </div>
@@ -337,7 +346,7 @@
                 <div class="status-column" data-status="Veículo Entregue">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-check text-gray-500 mr-2\'></i>
+                            <i class='bx bx-check text-gray-500 mr-2'></i>
                             Entregue
                         </h3>
                     </div>
@@ -354,7 +363,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Novo Veículo</h2>
                     <button id="closeAddModal" class="text-gray-500 hover:text-gray-700">
-                        <i class=\'bx bx-x text-2xl\'></i>
+                        <i class='bx bx-x text-2xl'></i>
                     </button>
                 </div>
                 <form id="addVehicleForm" class="space-y-4">
@@ -416,7 +425,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Detalhes do Veículo</h2>
                     <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-700">
-                        <i class=\'bx bx-x text-2xl\'></i>
+                        <i class='bx bx-x text-2xl'></i>
                     </button>
                 </div>
                 <div id="detailsContent" class="space-y-4 text-gray-700">
@@ -424,13 +433,13 @@
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
                     <button id="editVehicleBtn" class="btn bg-yellow-500 text-white px-4 py-2">
-                        <i class=\'bx bx-edit\'></i> Editar
+                        <i class='bx bx-edit'></i> Editar
                     </button>
                     <button id="addEvidenceBtn" class="btn bg-purple-600 text-white px-4 py-2">
-                        <i class=\'bx bx-camera\'></i> Adicionar Evidência
+                        <i class='bx bx-camera'></i> Adicionar Evidência
                     </button>
                     <button id="deleteVehicleBtn" class="btn bg-red-600 text-white px-4 py-2">
-                        <i class=\'bx bx-trash\'></i> Excluir
+                        <i class='bx bx-trash'></i> Excluir
                     </button>
                 </div>
             </div>
@@ -444,7 +453,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Adicionar Evidência</h2>
                     <button id="closeAddEvidenceModal" class="text-gray-500 hover:text-gray-700">
-                        <i class=\'bx bx-x text-2xl\'></i>
+                        <i class='bx bx-x text-2xl'></i>
                     </button>
                 </div>
                 <form id="addEvidenceForm" class="space-y-4">
@@ -488,7 +497,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Editar Veículo</h2>
                     <button id="closeEditModal" class="text-gray-500 hover:text-gray-700">
-                        <i class=\'bx bx-x text-2xl\'></i>
+                        <i class='bx bx-x text-2xl'></i>
                     </button>
                 </div>
                 <form id="editVehicleForm" class="space-y-4">
@@ -545,23 +554,23 @@
     <script>
         // --- CONFIGURAÇÃO DA API --- //
         const API_CONFIG = {
-            baseUrl: \'https://script.google.com/macros/s/AKfycbwswv6fE-ZbKdpquvKrRiOmFVd_flfZ96JGCGGT9Zk2Zu4sAkGOoDetiIT-Kjj0r7XbUw/exec\', // <-- SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT
-            timeout: 10000, // Tempo limite para requisições (10 segundos )
-            demoMode: false // Mude para \'false\' para usar o Google Sheets real
+            baseUrl: 'https://script.google.com/macros/s/AKfycbwswv6fE-ZbKdpquvKrRiOmFVd_flfZ96JGCGGT9Zk2Zu4sAkGOoDetiIT-Kjj0r7XbUw/exec',
+            timeout: 10000,
+            demoMode: false // MODO DEMO DESATIVADO - USANDO GOOGLE SHEETS REAL
         };
 
         // --- VARIÁVEIS GLOBAIS --- //
-        let currentVehicleId = null; // Usado para editar e adicionar evidências
-        let usuarioLogado = null; // Usuário logado do thIAguinho
+        let currentVehicleId = null;
+        let usuarioLogado = null;
 
         const statusMap = {
-            \'Aguardando Mecânico\': \'aguardando-mecanico\',
-            \'Em Análise (Aguardando Evidências)\': \'em-analise\',
-            \'Orçamento Enviado ao Cliente\': \'orcamento-enviado\',
-            \'Orçamento Aprovado\': \'orcamento-aprovado\',
-            \'Veículo em Manutenção\': \'veiculo-em-manutencao\',
-            \'Aguardando Retirada\': \'aguardando-retirada\',
-            \'Veículo Entregue\': \'veiculo-entregue\'
+            'Aguardando Mecânico': 'aguardando-mecanico',
+            'Em Análise (Aguardando Evidências )': 'em-analise',
+            'Orçamento Enviado ao Cliente': 'orcamento-enviado',
+            'Orçamento Aprovado': 'orcamento-aprovado',
+            'Veículo em Manutenção': 'veiculo-em-manutencao',
+            'Aguardando Retirada': 'aguardando-retirada',
+            'Veículo Entregue': 'veiculo-entregue'
         };
 
         const reverseStatusMap = Object.fromEntries(
@@ -569,105 +578,103 @@
         );
 
         const statusColors = {
-            \'Aguardando Mecânico\': \'yellow-500\',
-            \'Em Análise (Aguardando Evidências)\': \'purple-500\',
-            \'Orçamento Enviado ao Cliente\': \'cyan-500\',
-            \'Orçamento Aprovado\': \'green-500\',
-            \'Veículo em Manutenção\': \'red-500\',
-            \'Aguardando Retirada\': \'orange-500\',
-            \'Veículo Entregue\': \'gray-500\'
+            'Aguardando Mecânico': 'yellow-500',
+            'Em Análise (Aguardando Evidências)': 'purple-500',
+            'Orçamento Enviado ao Cliente': 'cyan-500',
+            'Orçamento Aprovado': 'green-500',
+            'Veículo em Manutenção': 'red-500',
+            'Aguardando Retirada': 'orange-500',
+            'Veículo Entregue': 'gray-500'
         };
 
         // --- ELEMENTOS DO DOM --- //
-        const userScreen = document.getElementById(\'userScreen\');
-        const app = document.getElementById(\'app\');
-         // const userDisplay = document.getElementById(\'userDisplay\'); // Removido, pois não há elemento com este ID // Removido, pois não há elemento com este ID
-        const logoutButton = document.getElementById(\'logoutButton\');
+        const userScreen = document.getElementById('userScreen');
+        const app = document.getElementById('app');
+        const logoutButton = document.getElementById('logoutButton');
 
-        const addVehicleModal = document.getElementById(\'addVehicleModal\');
-        const closeAddModal = document.getElementById(\'closeAddModal\');
-        const addVehicleForm = document.getElementById(\'addVehicleForm\');
-        const addVehicleBtn = document.getElementById(\'addVehicleBtn\');
+        const addVehicleModal = document.getElementById('addVehicleModal');
+        const closeAddModal = document.getElementById('closeAddModal');
+        const addVehicleForm = document.getElementById('addVehicleForm');
+        const addVehicleBtn = document.getElementById('addVehicleBtn');
 
-        const vehicleDetailsModal = document.getElementById(\'vehicleDetailsModal\');
-        const closeDetailsModal = document.getElementById(\'closeDetailsModal\'); // Corrigido para o ID correto
-        const detailsContent = document.getElementById(\'detailsContent\');
-        const editVehicleBtn = document.getElementById(\'editVehicleBtn\');
-        const addEvidenceBtn = document.getElementById(\'addEvidenceBtn\');
-        const deleteVehicleBtn = document.getElementById(\'deleteVehicleBtn\');
+        const vehicleDetailsModal = document.getElementById('vehicleDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const detailsContent = document.getElementById('detailsContent');
+        const editVehicleBtn = document.getElementById('editVehicleBtn');
+        const addEvidenceBtn = document.getElementById('addEvidenceBtn');
+        const deleteVehicleBtn = document.getElementById('deleteVehicleBtn');
 
-        const addEvidenceModal = document.getElementById(\'addEvidenceModal\');
-        const closeAddEvidenceModal = document.getElementById(\'closeAddEvidenceModal\');
-        const addEvidenceForm = document.getElementById(\'addEvidenceForm\');
-        const evidencePlacaInput = document.getElementById(\'evidencePlacaInput\');
-        const evidenceMidiasInput = document.getElementById(\'evidenceMidiasInput\');
-        const evidencePreview = document.getElementById(\'evidencePreview\');
+        const addEvidenceModal = document.getElementById('addEvidenceModal');
+        const closeAddEvidenceModal = document.getElementById('closeAddEvidenceModal');
+        const addEvidenceForm = document.getElementById('addEvidenceForm');
+        const evidencePlacaInput = document.getElementById('evidencePlacaInput');
+        const evidenceMidiasInput = document.getElementById('evidenceMidiasInput');
+        const evidencePreview = document.getElementById('evidencePreview');
 
-        const editVehicleModal = document.getElementById(\'editVehicleModal\');
-        const closeEditModal = document.getElementById(\'closeEditModal\');
-        const editVehicleForm = document.getElementById(\'editVehicleForm\');
-        const editVehicleId = document.getElementById(\'editVehicleId\');
-        const editPlaca = document.getElementById(\'editPlaca\');
-        const editModelo = document.getElementById(\'editModelo\');
-        const editCliente = document.getElementById(\'editCliente\');
-        const editTelefone = document.getElementById(\'editTelefone\');
-        const editResponsavel = document.getElementById(\'editResponsavel\');
-        const editObservacoes = document.getElementById(\'editObservacoes\');
+        const editVehicleModal = document.getElementById('editVehicleModal');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const editVehicleForm = document.getElementById('editVehicleForm');
+        const editVehicleId = document.getElementById('editVehicleId');
+        const editPlaca = document.getElementById('editPlaca');
+        const editModelo = document.getElementById('editModelo');
+        const editCliente = document.getElementById('editCliente');
+        const editTelefone = document.getElementById('editTelefone');
+        const editResponsavel = document.getElementById('editResponsavel');
+        const editObservacoes = document.getElementById('editObservacoes');
 
-        const refreshBtn = document.getElementById(\'refreshBtn\');
-        const lastUpdateSpan = document.getElementById(\'lastUpdate\');
-        const connectionStatusDiv = document.getElementById(\'connectionStatus\');
-        const notificationDiv = document.getElementById(\'notification\');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const lastUpdateSpan = document.getElementById('lastUpdate');
+        const connectionStatusDiv = document.getElementById('connectionStatus');
+        const notificationDiv = document.getElementById('notification');
 
         // --- FUNÇÕES DE UTILIDADE --- //
-        function showNotification(message, type = \'info\') {
+        function showNotification(message, type = 'info') {
             notificationDiv.textContent = message;
             notificationDiv.className = `notification show ${type}`;
             setTimeout(() => {
-                notificationDiv.classList.remove(\'show\');
+                notificationDiv.classList.remove('show');
             }, 3000);
         }
 
         function setLoading(isLoading) {
-            document.body.classList.toggle(\'loading\', isLoading);
+            document.body.classList.toggle('loading', isLoading);
             refreshBtn.disabled = isLoading;
             addVehicleBtn.disabled = isLoading;
         }
 
         function updateConnectionStatus(isConnected) {
             if (API_CONFIG.demoMode) {
-                connectionStatusDiv.className = \'connection-status demo\';
-                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-info-circle mr-1\'></i> Modo Demonstração\';
+                connectionStatusDiv.className = 'connection-status demo';
+                connectionStatusDiv.innerHTML = '<i class="bx bx-info-circle mr-1"></i> Modo Demonstração';
             } else if (isConnected) {
-                connectionStatusDiv.className = \'connection-status connected\';
-                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-check-circle mr-1\'></i> Conectado\';
+                connectionStatusDiv.className = 'connection-status connected';
+                connectionStatusDiv.innerHTML = '<i class="bx bx-check-circle mr-1"></i> Conectado';
             } else {
-                connectionStatusDiv.className = \'connection-status disconnected\';
-                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-x-circle mr-1\'></i> Desconectado\';
+                connectionStatusDiv.className = 'connection-status disconnected';
+                connectionStatusDiv.innerHTML = '<i class="bx bx-x-circle mr-1"></i> Desconectado';
             }
         }
 
         function updateLastUpdate() {
-            lastUpdateSpan.textContent = new Date().toLocaleTimeString(\'pt-BR\');
+            lastUpdateSpan.textContent = new Date().toLocaleTimeString('pt-BR');
         }
 
         // --- FUNÇÕES DE COMUNICAÇÃO COM GOOGLE APPS SCRIPT --- //
         async function callAppsScript(action, data = {}) {
             if (API_CONFIG.demoMode) {
-                console.warn(\'Modo demonstração ativo. Nenhuma chamada real à API.\');
+                console.warn('Modo demonstração ativo. Nenhuma chamada real à API.');
                 return handleDemoData(action, data);
             }
 
             setLoading(true);
-            updateConnectionStatus(true); // Assume conectado durante a chamada
+            updateConnectionStatus(true);
             try {
                 const response = await fetch(API_CONFIG.baseUrl, {
-                    method: \'POST\',
+                    method: 'POST',
                     headers: {
-                        \'Content-Type\': \'text/plain;charset=utf-8\', // Necessário para Apps Script
+                        'Content-Type': 'text/plain;charset=utf-8',
                     },
                     body: JSON.stringify({ action, ...data }),
-                    // timeout: API_CONFIG.timeout // Removido, pois \'timeout\' não é uma opção padrão do fetch
                 });
 
                 if (!response.ok) {
@@ -675,14 +682,14 @@
                 }
 
                 const result = await response.json();
-                if (result.status === \'error\') {
-                    throw new Error(result.message || \'Erro desconhecido do Apps Script\');
+                if (result.status === 'error') {
+                    throw new Error(result.message || 'Erro desconhecido do Apps Script');
                 }
                 updateConnectionStatus(true);
                 return result.data;
             } catch (error) {
-                console.error(\'Erro ao chamar Apps Script:\', error);
-                showNotification(`Erro: ${error.message}`, \'error\');
+                console.error('Erro ao chamar Apps Script:', error);
+                showNotification(`Erro: ${error.message}`, 'error');
                 updateConnectionStatus(false);
                 return null;
             } finally {
@@ -691,76 +698,20 @@
             }
         }
 
-        // Simulação de dados para modo demonstração
-        let demoVehicles = [
-            { id: \'DEMO001\', placa: \'ABC-1234\', modelo: \'VW Gol\', cliente: \'Maria Silva\', telefone: \'11987654321\', responsavel: \'Fernando\', observacoes: \'Troca de óleo e filtro\', status: \'Aguardando Mecânico\', entrada: \'01/08/2025\', historico: [], evidencias: [] },
-            { id: \'DEMO002\', placa: \'XYZ-5678\', modelo: \'Fiat Palio\', cliente: \'João Santos\', telefone: \'11999998888\', responsavel: \'Gustavo\', observacoes: \'Verificar barulho no motor\', status: \'Em Análise (Aguardando Evidências)\', entrada: \'02/08/2025\', historico: [], evidencias: [] },
-            { id: \'DEMO003\', placa: \'DEF-9012\', modelo: \'Chevrolet Onix\', cliente: \'Ana Costa\', telefone: \'11977776666\', responsavel: \'Marcelo\', observacoes: \'Pintura do para-choque\', status: \'Orçamento Enviado ao Cliente\', entrada: \'03/08/2025\', historico: [], evidencias: [] }
-        ];
-
-        async function handleDemoData(action, data) {
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simula delay da rede
-            switch (action) {
-                case \'getVehicles\':
-                    return demoVehicles;
-                case \'addVehicle\':
-                    const newVehicle = { ...data, id: \'DEMO\' + (demoVehicles.length + 1).toString().padStart(3, \'0\'), entrada: new Date().toLocaleDateString(\'pt-BR\'), historico: [], evidencias: [] };
-                    demoVehicles.push(newVehicle);
-                    showNotification(\'Veículo adicionado (Demo)!\', \'success\');
-                    return newVehicle;
-                case \'updateVehicleStatus\':
-                    const vehicleToUpdate = demoVehicles.find(v => v.id === data.id);
-                    if (vehicleToUpdate) {
-                        vehicleToUpdate.status = data.newStatus;
-                        vehicleToUpdate.historico.push({ status: data.newStatus, data: new Date().toLocaleString(\'pt-BR\'), nome: usuarioLogado });
-                        showNotification(\'Status atualizado (Demo)!\', \'success\');
-                        return vehicleToUpdate;
-                    }
-                    showNotification(\'Veículo não encontrado (Demo)!\', \'error\');
-                    return null;
-                case \'updateVehicle\':
-                    const vehicleToEdit = demoVehicles.find(v => v.id === data.id);
-                    if (vehicleToEdit) {
-                        Object.assign(vehicleToEdit, data);
-                        showNotification(\'Veículo editado (Demo)!\', \'success\');
-                        return vehicleToEdit;
-                    }
-                    showNotification(\'Veículo não encontrado (Demo)!\', \'error\');
-                    return null;
-                case \'deleteVehicle\':
-                    demoVehicles = demoVehicles.filter(v => v.id !== data.id);
-                    showNotification(\'Veículo excluído (Demo)!\', \'success\');
-                    return { success: true };
-                case \'addEvidence\':
-                    const vehicleForEvidence = demoVehicles.find(v => v.id === data.vehicleId);
-                    if (vehicleForEvidence) {
-                        const newEvidence = { ...data, id: \'EVID\' + (vehicleForEvidence.evidencias.length + 1), data: new Date().toLocaleDateString(\'pt-BR\'), responsavel: usuarioLogado };
-                        vehicleForEvidence.evidencias.push(newEvidence);
-                        showNotification(\'Evidência adicionada (Demo)!\', \'success\');
-                        return newEvidence;
-                    }
-                    showNotification(\'Veículo não encontrado para evidência (Demo)!\', \'error\');
-                    return null;
-                default:
-                    showNotification(\'Ação de demonstração não reconhecida.\', \'error\');
-                    return null;
-            }
-        }
-
         // --- FUNÇÕES DE RENDERIZAÇÃO DO DASHBOARD --- //
         async function loadVehicles() {
-            const vehicles = await callAppsScript(\'getVehicles\');
+            const vehicles = await callAppsScript('getVehicles');
             if (!vehicles) return;
 
             // Limpa as colunas e zera os contadores
-            document.querySelectorAll(\'.vehicle-list\').forEach(list => list.innerHTML = \'\');
+            document.querySelectorAll('.vehicle-list').forEach(list => list.innerHTML = '');
             Object.keys(statusMap).forEach(status => {
                 document.getElementById(`count-${status}`).textContent = 0;
             });
 
             // Preenche as colunas e atualiza os contadores
             vehicles.forEach(vehicle => {
-                const statusKey = vehicle.status; // Assume que o status do veículo corresponde às chaves do statusMap
+                const statusKey = vehicle.status;
                 const listElement = document.getElementById(`list-${statusKey}`);
                 if (listElement) {
                     const card = createVehicleCard(vehicle);
@@ -772,16 +723,16 @@
         }
 
         function createVehicleCard(vehicle) {
-            const card = document.createElement(\'div\');
-            card.className = `vehicle-card ${statusMap[vehicle.status] ? \'status-\' + statusMap[vehicle.status] : \'\'}`;
-            card.setAttribute(\'data-id\', vehicle.id);
-            card.setAttribute(\'data-placa\', vehicle.placa);
+            const card = document.createElement('div');
+            card.className = `vehicle-card ${statusMap[vehicle.status] ? 'status-' + statusMap[vehicle.status] : ''}`;
+            card.setAttribute('data-id', vehicle.id);
+            card.setAttribute('data-placa', vehicle.placa);
             card.innerHTML = `
-                <h4 class=\"font-bold text-lg mb-1\">${vehicle.placa} - ${vehicle.modelo}</h4>
-                <p class=\"text-sm text-gray-600\">Cliente: ${vehicle.cliente}</p>
-                <p class=\"text-sm text-gray-600\">Responsável: ${vehicle.responsavel || \'Não atribuído\'}</p>
-                <div class=\"mt-3 flex justify-end\">
-                    <button class=\"btn bg-blue-500 text-white px-3 py-1 text-sm\" onclick=\"openVehicleDetailsModal(\'${vehicle.id}\')\">
+                <h4 class="font-bold text-lg mb-1">${vehicle.placa} - ${vehicle.modelo}</h4>
+                <p class="text-sm text-gray-600">Cliente: ${vehicle.cliente}</p>
+                <p class="text-sm text-gray-600">Responsável: ${vehicle.responsavel || 'Não atribuído'}</p>
+                <div class="mt-3 flex justify-end">
+                    <button class="btn bg-blue-500 text-white px-3 py-1 text-sm" onclick="openVehicleDetailsModal('${vehicle.id}')">
                         Detalhes
                     </button>
                 </div>
@@ -791,25 +742,24 @@
 
         // --- DRAG AND DROP (SORTABLEJS) --- //
         function setupSortable() {
-            document.querySelectorAll(\'.vehicle-list\').forEach(list => {
+            document.querySelectorAll('.vehicle-list').forEach(list => {
                 new Sortable(list, {
-                    group: \'vehicles\',
+                    group: 'vehicles',
                     animation: 150,
-                    ghostClass: \'dragging\',
+                    ghostClass: 'dragging',
                     onEnd: async function (evt) {
                         const vehicleId = evt.item.dataset.id;
-                        const oldStatusId = evt.from.closest(\'.status-column\').dataset.status;
-                        const newStatusId = evt.to.closest(\'.status-column\').dataset.status;
+                        const oldStatusId = evt.from.closest('.status-column').dataset.status;
+                        const newStatusId = evt.to.closest('.status-column').dataset.status;
 
                         if (oldStatusId !== newStatusId) {
-                            showNotification(`Movendo ${evt.item.dataset.placa} para ${newStatusId}...`, \'info\');
-                            const success = await callAppsScript(\'updateVehicleStatus\', { id: vehicleId, newStatus: newStatusId, user: usuarioLogado });
+                            showNotification(`Movendo ${evt.item.dataset.placa} para ${newStatusId}...`, 'info');
+                            const success = await callAppsScript('updateVehicleStatus', { id: vehicleId, newStatus: newStatusId, user: usuarioLogado });
                             if (success) {
-                                showNotification(`Veículo ${evt.item.dataset.placa} movido para ${newStatusId}!`, \'success\');
-                                loadVehicles(); // Recarrega para atualizar contadores e estado
+                                showNotification(`Veículo ${evt.item.dataset.placa} movido para ${newStatusId}!`, 'success');
+                                loadVehicles();
                             } else {
-                                showNotification(`Falha ao mover veículo ${evt.item.dataset.placa}.`, \'error\');
-                                // Reverter a mudança visual se a API falhar
+                                showNotification(`Falha ao mover veículo ${evt.item.dataset.placa}.`, 'error');
                                 evt.from.appendChild(evt.item); 
                             }
                         }
@@ -821,60 +771,58 @@
         // --- MODAIS E FORMULÁRIOS --- //
 
         // Login do thIAguinho
-        // A função login foi movida para o escopo global para ser acessível pelos onclicks no HTML
         window.login = function(nome) {
             usuarioLogado = nome;
-            // userDisplay.textContent = nome; // Este elemento não existe no HTML atual
-            userScreen.classList.add(\'hidden\');
-            app.classList.remove(\'hidden\');
+            userScreen.classList.add('hidden');
+            app.classList.remove('hidden');
             loadVehicles();
-            setupSortable(); // Inicializa o SortableJS após o login
-            setInterval(loadVehicles, 30000); // Atualiza a cada 30 segundos
+            setupSortable();
+            setInterval(loadVehicles, 30000);
             updateLastUpdate();
         };
 
-        logoutButton.addEventListener(\'click\', () => {
+        logoutButton.addEventListener('click', () => {
             usuarioLogado = null;
-            app.classList.add(\'hidden\');
-            userScreen.classList.remove(\'hidden\');
-            showNotification(\'Sessão encerrada.\', \'info\');
+            app.classList.add('hidden');
+            userScreen.classList.remove('hidden');
+            showNotification('Sessão encerrada.', 'info');
         });
 
         // Adicionar Veículo
-        addVehicleBtn.addEventListener(\'click\', () => {
+        addVehicleBtn.addEventListener('click', () => {
             addVehicleForm.reset();
-            addVehicleModal.classList.remove(\'hidden\');
+            addVehicleModal.classList.remove('hidden');
         });
 
-        closeAddModal.addEventListener(\'click\', () => {
-            addVehicleModal.classList.add(\'hidden\');
+        closeAddModal.addEventListener('click', () => {
+            addVehicleModal.classList.add('hidden');
         });
 
-        addVehicleForm.addEventListener(\'submit\', async (e) => {
+        addVehicleForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(addVehicleForm);
             const vehicleData = Object.fromEntries(formData.entries());
-            vehicleData.status = \'Aguardando Mecânico\'; // Status inicial
-            vehicleData.entrada = new Date().toLocaleDateString(\'pt-BR\');
-            vehicleData.responsavel = vehicleData.responsavel || \'Não atribuído\';
+            vehicleData.status = 'Aguardando Mecânico';
+            vehicleData.entrada = new Date().toLocaleDateString('pt-BR');
+            vehicleData.responsavel = vehicleData.responsavel || 'Não atribuído';
 
-            showNotification(\'Adicionando veículo...\', \'info\');
-            const newVehicle = await callAppsScript(\'addVehicle\', { ...vehicleData, user: usuarioLogado });
+            showNotification('Adicionando veículo...', 'info');
+            const newVehicle = await callAppsScript('addVehicle', { ...vehicleData, user: usuarioLogado });
             if (newVehicle) {
-                showNotification(`Veículo ${newVehicle.placa} adicionado com sucesso!`, \'success\');
-                addVehicleModal.classList.add(\'hidden\');
+                showNotification(`Veículo ${newVehicle.placa} adicionado com sucesso!`, 'success');
+                addVehicleModal.classList.add('hidden');
                 loadVehicles();
             }
         });
 
         // Detalhes do Veículo
-        window.openVehicleDetailsModal = async function(id) { // Tornar global para onclick
+        window.openVehicleDetailsModal = async function(id) {
             currentVehicleId = id;
-            showNotification(\'Carregando detalhes...\', \'info\');
-            const vehicles = await callAppsScript(\'getVehicles\');
+            showNotification('Carregando detalhes...', 'info');
+            const vehicles = await callAppsScript('getVehicles');
             const vehicle = vehicles ? vehicles.find(v => v.id === id) : null;
             if (!vehicle) {
-                showNotification(\'Veículo não encontrado.\', \'error\');
+                showNotification('Veículo não encontrado.', 'error');
                 return;
             }
 
@@ -883,55 +831,55 @@
                 <p><b>Placa:</b> ${vehicle.placa}</p>
                 <p><b>Modelo:</b> ${vehicle.modelo}</p>
                 <p><b>Cliente:</b> ${vehicle.cliente}</p>
-                <p><b>Telefone:</b> ${vehicle.telefone || \'N/A\'}</p>
-                <p><b>Status:</b> <span class=\"status-badge bg-${statusColors[vehicle.status]}\">${vehicle.status}</span></p>
-                <p><b>Responsável:</b> ${vehicle.responsavel || \'N/A\'}</p>
+                <p><b>Telefone:</b> ${vehicle.telefone || 'N/A'}</p>
+                <p><b>Status:</b> <span class="status-badge bg-${statusColors[vehicle.status]}">${vehicle.status}</span></p>
+                <p><b>Responsável:</b> ${vehicle.responsavel || 'N/A'}</p>
                 <p><b>Entrada:</b> ${vehicle.entrada}</p>
-                <p><b>Observações:</b> ${vehicle.observacoes || \'Nenhuma\'}</p>
+                <p><b>Observações:</b> ${vehicle.observacoes || 'Nenhuma'}</p>
 
-                <h3 class=\"font-bold text-lg mt-4 mb-2\">Histórico</h3>
-                <div class=\"space-y-2\">
+                <h3 class="font-bold text-lg mt-4 mb-2">Histórico</h3>
+                <div class="space-y-2">
                     ${vehicle.historico && vehicle.historico.length > 0 
-                        ? vehicle.historico.map(h => `<div class=\"history-item\">${h.status} por ${h.nome} em ${h.data}</div>`).join(\'\')
-                        : \'<p class=\"text-gray-500\">Nenhum histórico disponível.</p>\'
+                        ? vehicle.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
+                        : '<p class="text-gray-500">Nenhum histórico disponível.</p>'
                     }
                 </div>
 
-                <h3 class=\"font-bold text-lg mt-4 mb-2\">Evidências</h3>
-                <div class=\"space-y-2\">
+                <h3 class="font-bold text-lg mt-4 mb-2">Evidências</h3>
+                <div class="space-y-2">
                     ${vehicle.evidencias && vehicle.evidencias.length > 0 
                         ? vehicle.evidencias.map(e => `
-                            <div class=\"evidence-item\">
+                            <div class="evidence-item">
                                 <p><b>Problema:</b> ${e.problema}</p>
-                                <p><b>Peças:</b> ${e.pecas || \'N/A\'}</p>
-                                <p><b>Valor:</b> R$ ${e.valor ? parseFloat(e.valor).toFixed(2) : \'0.00\'}</p>
+                                <p><b>Peças:</b> ${e.pecas || 'N/A'}</p>
+                                <p><b>Valor:</b> R$ ${e.valor ? parseFloat(e.valor).toFixed(2) : '0.00'}</p>
                                 <p><b>Responsável:</b> ${e.responsavel} em ${e.data}</p>
                                 ${e.midias && e.midias.length > 0 ? `
-                                    <div class=\"file-preview mt-2\">
+                                    <div class="file-preview mt-2">
                                         ${e.midias.map(m => {
-                                            const isVideo = m.endsWith(\'.mp4\') || m.endsWith(\'.webm\') || m.endsWith(\'.ogg\');
+                                            const isVideo = m.endsWith('.mp4') || m.endsWith('.webm') || m.endsWith('.ogg');
                                             return isVideo 
-                                                ? `<video src=\"${m}\" controls></video>` 
-                                                : `<img src=\"${m}\" alt=\"Evidência\">`;
-                                        }).join(\'\')}
+                                                ? `<video src="${m}" controls></video>` 
+                                                : `<img src="${m}" alt="Evidência">`;
+                                        }).join('')}
                                     </div>
-                                ` : \'<p class=\"text-gray-500\">Nenhuma mídia anexada.</p>\''}
+                                ` : '<p class="text-gray-500">Nenhuma mídia anexada.</p>'}
                             </div>
-                        `).join(\'\')
-                        : \'<p class=\"text-gray-500\">Nenhuma evidência anexada.</p>\'
+                        `).join('')
+                        : '<p class="text-gray-500">Nenhuma evidência anexada.</p>'
                     }
                 </div>
             `;
-            vehicleDetailsModal.classList.remove(\'hidden\');
+            vehicleDetailsModal.classList.remove('hidden');
         }
 
-        document.getElementById(\'closeDetailsModal\').addEventListener(\'click\', () => {
-            vehicleDetailsModal.classList.add(\'hidden\');
+        document.getElementById('closeDetailsModal').addEventListener('click', () => {
+            vehicleDetailsModal.classList.add('hidden');
         });
 
         // Editar Veículo
-        editVehicleBtn.addEventListener(\'click\', async () => {
-            const vehicles = await callAppsScript(\'getVehicles\');
+        editVehicleBtn.addEventListener('click', async () => {
+            const vehicles = await callAppsScript('getVehicles');
             const vehicle = vehicles ? vehicles.find(v => v.id === currentVehicleId) : null;
             if (vehicle) {
                 editVehicleId.value = vehicle.id;
@@ -941,79 +889,79 @@
                 editTelefone.value = vehicle.telefone;
                 editResponsavel.value = vehicle.responsavel;
                 editObservacoes.value = vehicle.observacoes;
-                vehicleDetailsModal.classList.add(\'hidden\');
-                editVehicleModal.classList.remove(\'hidden\');
+                vehicleDetailsModal.classList.add('hidden');
+                editVehicleModal.classList.remove('hidden');
             }
         });
 
-        closeEditModal.addEventListener(\'click\', () => {
-            editVehicleModal.classList.add(\'hidden\');
+        closeEditModal.addEventListener('click', () => {
+            editVehicleModal.classList.add('hidden');
         });
 
-        editVehicleForm.addEventListener(\'submit\', async (e) => {
+        editVehicleForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(editVehicleForm);
             const updatedData = Object.fromEntries(formData.entries());
-            updatedData.user = usuarioLogado; // Adiciona o usuário que fez a alteração
+            updatedData.user = usuarioLogado;
 
-            showNotification(\'Salvando alterações...\', \'info\');
-            const result = await callAppsScript(\'updateVehicle\', updatedData);
+            showNotification('Salvando alterações...', 'info');
+            const result = await callAppsScript('updateVehicle', updatedData);
             if (result) {
-                showNotification(`Veículo ${updatedData.placa} atualizado com sucesso!`, \'success\');
-                editVehicleModal.classList.add(\'hidden\');
+                showNotification(`Veículo ${updatedData.placa} atualizado com sucesso!`, 'success');
+                editVehicleModal.classList.add('hidden');
                 loadVehicles();
             }
         });
 
         // Excluir Veículo
-        deleteVehicleBtn.addEventListener(\'click\', async () => {
-            if (confirm(\'Tem certeza que deseja excluir este veículo? Esta ação é irreversível.\')) {
-                showNotification(\'Excluindo veículo...\', \'info\');
-                const result = await callAppsScript(\'deleteVehicle\', { id: currentVehicleId, user: usuarioLogado });
+        deleteVehicleBtn.addEventListener('click', async () => {
+            if (confirm('Tem certeza que deseja excluir este veículo? Esta ação é irreversível.')) {
+                showNotification('Excluindo veículo...', 'info');
+                const result = await callAppsScript('deleteVehicle', { id: currentVehicleId, user: usuarioLogado });
                 if (result && result.success) {
-                    showNotification(\'Veículo excluído com sucesso!\', \'success\');
-                    vehicleDetailsModal.classList.add(\'hidden\');
+                    showNotification('Veículo excluído com sucesso!', 'success');
+                    vehicleDetailsModal.classList.add('hidden');
                     loadVehicles();
                 }
             }
         });
 
         // Adicionar Evidência
-        addEvidenceBtn.addEventListener(\'click\', () => {
+        addEvidenceBtn.addEventListener('click', () => {
             addEvidenceForm.reset();
-            evidencePlacaInput.value = currentVehicleId; // ID do veículo, não a placa
-            evidencePreview.innerHTML = \'\';
-            vehicleDetailsModal.classList.add(\'hidden\');
-            addEvidenceModal.classList.remove(\'hidden\');
+            evidencePlacaInput.value = currentVehicleId;
+            evidencePreview.innerHTML = '';
+            vehicleDetailsModal.classList.add('hidden');
+            addEvidenceModal.classList.remove('hidden');
         });
 
-        closeAddEvidenceModal.addEventListener(\'click\', () => {
-            addEvidenceModal.classList.add(\'hidden\');
+        closeAddEvidenceModal.addEventListener('click', () => {
+            addEvidenceModal.classList.add('hidden');
         });
 
-        evidenceMidiasInput.addEventListener(\'change\', function() {
-            evidencePreview.innerHTML = \'\';
+        evidenceMidiasInput.addEventListener('change', function() {
+            evidencePreview.innerHTML = '';
             Array.from(this.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const el = document.createElement(file.type.startsWith(\'video/\') ? \'video\' : \'img\');
+                    const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'img');
                     el.src = e.target.result;
-                    el.controls = file.type.startsWith(\'video/\');
-                    el.style.width = \'100px\';
-                    el.style.height = \'100px\';
-                    el.style.objectFit = \'cover\';
-                    el.style.borderRadius = \'8px\';
+                    el.controls = file.type.startsWith('video/');
+                    el.style.width = '100px';
+                    el.style.height = '100px';
+                    el.style.objectFit = 'cover';
+                    el.style.borderRadius = '8px';
                     evidencePreview.appendChild(el);
                 };
                 reader.readAsDataURL(file);
             });
         });
 
-        addEvidenceForm.addEventListener(\'submit\', async (e) => {
+        addEvidenceForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(addEvidenceForm);
             const evidenceData = Object.fromEntries(formData.entries());
-            evidenceData.vehicleId = evidenceData.placa; // Renomeia para vehicleId
+            evidenceData.vehicleId = evidenceData.placa;
             delete evidenceData.placa;
             evidenceData.responsavel = usuarioLogado;
 
@@ -1021,45 +969,43 @@
             const filePromises = Array.from(files).map(file => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result.split(\'\\,\')[1] });
+                    reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result.split(',')[1] });
                     reader.onerror = error => reject(error);
                     reader.readAsDataURL(file);
                 });
             });
 
-            showNotification(\'Adicionando evidência...\', \'info\');
+            showNotification('Adicionando evidência...', 'info');
             try {
                 const uploadedFiles = await Promise.all(filePromises);
-                evidenceData.midias = uploadedFiles; // Adiciona os dados dos arquivos
+                evidenceData.midias = uploadedFiles;
 
-                const result = await callAppsScript(\'addEvidence\', evidenceData);
+                const result = await callAppsScript('addEvidence', evidenceData);
                 if (result) {
-                    showNotification(\'Evidência adicionada com sucesso!\', \'success\');
-                    addEvidenceModal.classList.add(\'hidden\');
+                    showNotification('Evidência adicionada com sucesso!', 'success');
+                    addEvidenceModal.classList.add('hidden');
                     loadVehicles();
                 }
             } catch (error) {
-                showNotification(`Erro ao fazer upload da mídia: ${error.message}`, \'error\');
-                console.error(\'Erro de upload:\', error);
+                showNotification(`Erro ao fazer upload da mídia: ${error.message}`, 'error');
+                console.error('Erro de upload:', error);
             }
         });
 
         // --- EVENT LISTENERS GERAIS --- //
-        refreshBtn.addEventListener(\'click\', loadVehicles);
+        refreshBtn.addEventListener('click', loadVehicles);
 
         // Esconder modais ao clicar fora
-        window.addEventListener(\'click\', (e) => {
-            if (e.target === addVehicleModal) addVehicleModal.classList.add(\'hidden\');
-            if (e.target === vehicleDetailsModal) vehicleDetailsModal.classList.add(\'hidden\');
-            if (e.target === addEvidenceModal) addEvidenceModal.classList.add(\'hidden\');
-            if (e.target === editVehicleModal) editVehicleModal.classList.add(\'hidden\');
+        window.addEventListener('click', (e) => {
+            if (e.target === addVehicleModal) addVehicleModal.classList.add('hidden');
+            if (e.target === vehicleDetailsModal) vehicleDetailsModal.classList.add('hidden');
+            if (e.target === addEvidenceModal) addEvidenceModal.classList.add('hidden');
+            if (e.target === editVehicleModal) editVehicleModal.classList.add('hidden');
         });
 
         // Inicialização
-        document.addEventListener(\'DOMContentLoaded\', () => {
-            // O login é feito pela tela de seleção de usuário do thIAguinho
-            // loadVehicles(); // Não carrega veículos antes do login
-            updateConnectionStatus(API_CONFIG.demoMode); // Define status inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            updateConnectionStatus(API_CONFIG.demoMode);
             updateLastUpdate();
         });
     </script>
