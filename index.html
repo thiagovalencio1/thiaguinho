@@ -1,217 +1,196 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>thIAguinho 🛠️ - Dashboard Oficina</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    .dashboard-container {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
-    .status-column {
-      background: #f8fafc;
-      border-radius: 12px;
-      min-height: 600px;
-      border: 2px dashed #e2e8f0;
-      transition: all 0.3s ease;
-    }
-    .status-column.drag-over {
-      border-color: #3b82f6;
-      background: #eff6ff;
-      transform: scale(1.02);
-    }
-    .vehicle-card {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      cursor: grab;
-      transition: all 0.3s ease;
-      border-left: 5px solid #3b82f6;
-    }
-    .vehicle-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-    .vehicle-card.dragging {
-      opacity: 0.7;
-      transform: rotate(5deg);
-    }
-    .vehicle-card.status-aguardando-mecanico {
-      border-left-color: #f59e0b;
-    }
-    .vehicle-card.status-em-analise {
-      border-left-color: #8b5cf6;
-    }
-    .vehicle-card.status-orcamento-enviado {
-      border-left-color: #06b6d4;
-    }
-    .vehicle-card.status-orcamento-aprovado {
-      border-left-color: #10b981;
-    }
-    .vehicle-card.status-veiculo-em-manutencao {
-      border-left-color: #ef4444;
-    }
-    .vehicle-card.status-aguardando-retirada {
-      border-left-color: #f97316;
-    }
-    .vehicle-card.status-veiculo-entregue {
-      border-left-color: #6b7280;
-      opacity: 0.8;
-    }
-    .modal {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-    }
-    .modal-content {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .btn {
-      transition: all 0.3s ease;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    .loading {
-      opacity: 0.6;
-      pointer-events: none;
-    }
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .file-preview {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .file-preview img, .file-preview video {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid #e5e7eb;
-    }
-    .status-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      padding: 16px 24px;
-      border-radius: 12px;
-      color: white;
-      font-weight: 600;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-    }
-    .notification.show {
-      transform: translateX(0);
-    }
-    .notification.success {
-      background: #10b981;
-    }
-    .notification.error {
-      background: #ef4444;
-    }
-    .notification.info {
-      background: #3b82f6;
-    }
-    .connection-status {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .connection-status.connected {
-      background: #dcfce7;
-      color: #166534;
-    }
-    .connection-status.disconnected {
-      background: #fef2f2;
-      color: #991b1b;
-    }
-    .connection-status.demo {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    /* Estilos do thIAguinho */
-    .user-btn { padding: 12px; margin: 4px; background: #f1f5f9; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-weight: 500; cursor: pointer; }
-    .user-btn:hover { background: #e2e8f0; }
-    .col-thiaguinho { min-height: 500px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card-thiaguinho { background: white; border-left: 5px solid #1d4ed8; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-    .card-thiaguinho.aprovado { border-left-color: #059669; }
-    .card-thiaguinho.finalizado { border-left-color: #10b981; }
-    .card-thiaguinho.entregue { border-left-color: #6b7280; opacity: 0.8; }
-    .status-nav { display: flex; justify-content: space-between; margin-top: 8px; }
-    .evidence-item { padding: 8px; background: #e0f2fe; border-left: 3px solid #0ea5e9; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
-    .history-item { padding: 8px; background: #f8f9fa; border-left: 3px solid #3b82f6; margin: 4px 0; border-radius: 4px; font-size: 0.9em; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Oficina - Sistema de Gestão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .status-column {
+            background: #f8fafc;
+            border-radius: 12px;
+            min-height: 600px;
+            border: 2px dashed #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .status-column.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+        .vehicle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            transition: all 0.3s ease;
+            border-left: 5px solid #3b82f6;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .vehicle-card.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+        }
+        .vehicle-card.status-aguardando-mecanico {
+            border-left-color: #f59e0b;
+        }
+        .vehicle-card.status-em-analise {
+            border-left-color: #8b5cf6;
+        }
+        .vehicle-card.status-orcamento-enviado {
+            border-left-color: #06b6d4;
+        }
+        .vehicle-card.status-orcamento-aprovado {
+            border-left-color: #10b981;
+        }
+        .vehicle-card.status-veiculo-em-manutencao {
+            border-left-color: #ef4444;
+        }
+        .vehicle-card.status-aguardando-retirada {
+            border-left-color: #f97316;
+        }
+        .vehicle-card.status-veiculo-entregue {
+            border-left-color: #6b7280;
+            opacity: 0.8;
+        }
+        .modal {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .file-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .file-preview img, .file-preview video {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification.success {
+            background: #10b981;
+        }
+        .notification.error {
+            background: #ef4444;
+        }
+        .notification.info {
+            background: #3b82f6;
+        }
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .connection-status.connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .connection-status.disconnected {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .connection-status.demo {
+            background: #fef3c7;
+            color: #92400e;
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Tela de Seleção de Usuário -->
-  <div id="userScreen" class="flex items-center justify-center min-h-screen bg-blue-50 p-4">
-    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-center">      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho 🛠️</h1>
-      <p class="text-gray-600 mb-6">Selecione seu nome para entrar:</p>
-      <div class="grid grid-cols-1 gap-3">        <div onclick="window.login(\'Augusto\')" class="user-btn">Augusto (Gestor)</div>        <div onclick="window.login(\'William Barbosa\')" class="user-btn">William Barbosa (Atendente)</div>        <div onclick="window.login(\'Thiago Ventura Valencio\')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>        <div onclick="window.login(\'Fernando\')" class="user-btn">Fernando (Mecânico)</div>        <div onclick="window.login(\'Gustavo\')" class="user-btn">Gustavo (Mecânico)</div>        <div onclick="window.login(\'Marcelo\')" class="user-btn">Marcelo (Mecânico)</div>      </div>
-    </div>
-  </div>
-
-  <!-- App Principal (Dashboard) -->
-  <div id="app" class="hidden">
+    <!-- Header -->
     <header class="bg-white shadow-lg border-b-4 border-blue-500">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <i class=\'bx bx-wrench text-3xl text-blue-600\'></i>
+                    <i class='bx bx-wrench text-3xl text-blue-600'></i>
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800">Dashboard Oficina</h1>
                         <p class="text-sm text-gray-600">Sistema de Gestão de Veículos</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="connection-status demo" id="connectionStatus">
-                        <i class=\'bx bx-info-circle mr-1\'></i>
+                    <div class="connection-status demo">
+                        <i class='bx bx-info-circle mr-1'></i>
                         Modo Demonstração
                     </div>
                     <div class="text-right">
@@ -219,135 +198,126 @@
                         <p id="lastUpdate" class="text-sm font-semibold text-gray-800">--:--</p>
                     </div>
                     <button id="refreshBtn" class="btn bg-blue-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class=\'bx bx-refresh\'></i>
+                        <i class='bx bx-refresh'></i>
                         <span>Atualizar</span>
                     </button>
                     <button id="addVehicleBtn" class="btn bg-green-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class=\'bx bx-plus\'></i>
+                        <i class='bx bx-plus'></i>
                         <span>Novo Veículo</span>
                     </button>
-                    <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
                 </div>
             </div>
         </div>
     </header>
-
+    <!-- Main Dashboard -->
     <main class="container mx-auto px-6 py-8">
         <div class="dashboard-container p-6">
             <!-- Status Summary -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
                 <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Aguardando Mecânico">0</div>
+                    <div class="text-2xl font-bold" id="count-aguardando-mecanico">0</div>
                     <div class="text-sm">Aguardando</div>
                 </div>
                 <div class="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Em Análise (Aguardando Evidências)">0</div>
+                    <div class="text-2xl font-bold" id="count-em-analise">0</div>
                     <div class="text-sm">Em Análise</div>
                 </div>
                 <div class="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Orçamento Enviado ao Cliente">0</div>
+                    <div class="text-2xl font-bold" id="count-orcamento-enviado">0</div>
                     <div class="text-sm">Enviado</div>
                 </div>
                 <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Orçamento Aprovado">0</div>
+                    <div class="text-2xl font-bold" id="count-orcamento-aprovado">0</div>
                     <div class="text-sm">Aprovado</div>
                 </div>
                 <div class="bg-gradient-to-r from-red-400 to-red-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Veículo em Manutenção">0</div>
+                    <div class="text-2xl font-bold" id="count-veiculo-em-manutencao">0</div>
                     <div class="text-sm">Manutenção</div>
                 </div>
                 <div class="bg-gradient-to-r from-orange-400 to-orange-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Aguardando Retirada">0</div>
+                    <div class="text-2xl font-bold" id="count-aguardando-retirada">0</div>
                     <div class="text-sm">Retirada</div>
                 </div>
                 <div class="bg-gradient-to-r from-gray-400 to-gray-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Veículo Entregue">0</div>
+                    <div class="text-2xl font-bold" id="count-veiculo-entregue">0</div>
                     <div class="text-sm">Entregue</div>
                 </div>
             </div>
-
             <!-- Kanban Board -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-6">
                 <!-- Aguardando Mecânico -->
                 <div class="status-column" data-status="Aguardando Mecânico">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-time-five text-yellow-500 mr-2\'></i>
+                            <i class='bx bx-time-five text-yellow-500 mr-2'></i>
                             Aguardando Mecânico
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Aguardando Mecânico"></div>
+                    <div class="p-4 vehicle-list" id="list-aguardando-mecanico"></div>
                 </div>
-
                 <!-- Em Análise -->
                 <div class="status-column" data-status="Em Análise (Aguardando Evidências)">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-search text-purple-500 mr-2\'></i>
+                            <i class='bx bx-search text-purple-500 mr-2'></i>
                             Em Análise
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Em Análise (Aguardando Evidências)"></div>
+                    <div class="p-4 vehicle-list" id="list-em-analise"></div>
                 </div>
-
                 <!-- Orçamento Enviado -->
                 <div class="status-column" data-status="Orçamento Enviado ao Cliente">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-send text-cyan-500 mr-2\'></i>
+                            <i class='bx bx-send text-cyan-500 mr-2'></i>
                             Orçamento Enviado
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Orçamento Enviado ao Cliente"></div>
+                    <div class="p-4 vehicle-list" id="list-orcamento-enviado"></div>
                 </div>
-
                 <!-- Orçamento Aprovado -->
                 <div class="status-column" data-status="Orçamento Aprovado">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-check-circle text-green-500 mr-2\'></i>
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Aprovado
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Orçamento Aprovado"></div>
+                    <div class="p-4 vehicle-list" id="list-orcamento-aprovado"></div>
                 </div>
-
                 <!-- Veículo em Manutenção -->
                 <div class="status-column" data-status="Veículo em Manutenção">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-wrench text-red-500 mr-2\'></i>
+                            <i class='bx bx-wrench text-red-500 mr-2'></i>
                             Em Manutenção
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Veículo em Manutenção"></div>
+                    <div class="p-4 vehicle-list" id="list-veiculo-em-manutencao"></div>
                 </div>
-
                 <!-- Aguardando Retirada -->
                 <div class="status-column" data-status="Aguardando Retirada">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-package text-orange-500 mr-2\'></i>
+                            <i class='bx bx-package text-orange-500 mr-2'></i>
                             Aguardando Retirada
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Aguardando Retirada"></div>
+                    <div class="p-4 vehicle-list" id="list-aguardando-retirada"></div>
                 </div>
-
                 <!-- Veículo Entregue -->
                 <div class="status-column" data-status="Veículo Entregue">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class=\'bx bx-check text-gray-500 mr-2\'></i>
+                            <i class='bx bx-check text-gray-500 mr-2'></i>
                             Entregue
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Veículo Entregue"></div>
+                    <div class="p-4 vehicle-list" id="list-veiculo-entregue"></div>
                 </div>
             </div>
         </div>
     </main>
-
     <!-- Modal: Adicionar Veículo -->
     <div id="addVehicleModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="modal-content w-full max-w-md mx-4">
@@ -355,7 +325,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Novo Veículo</h2>
                     <button id="closeAddModal" class="text-gray-500 hover:text-gray-700">
-                        <i class=\'bx bx-x text-2xl\'></i>
+                        <i class='bx bx-x text-2xl'></i>
                     </button>
                 </div>
                 <form id="addVehicleForm" class="space-y-4">
@@ -370,5 +340,498 @@
                         <input type="text" name="modelo" required 
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                placeholder="Gol 2018">
-   
-(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+                        <input type="text" name="cliente" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="João Silva">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                        <input type="tel" name="telefone" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="(11) 99999-9999">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
+                        <select name="responsavel" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Selecione um responsável</option>
+                            <option value="Mecânico 1">Mecânico 1</option>
+                            <option value="Mecânico 2">Mecânico 2</option>
+                            <option value="Mecânico 3">Mecânico 3</option>
+                            <option value="Supervisor">Supervisor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status Inicial</label>
+                        <select name="status" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="Aguardando Mecânico">Aguardando Mecânico</option>
+                            <option value="Em Análise (Aguardando Evidências)">Em Análise</option>
+                            <option value="Orçamento Enviado ao Cliente">Orçamento Enviado</option>
+                            <option value="Orçamento Aprovado">Orçamento Aprovado</option>
+                            <option value="Veículo em Manutenção">Veículo em Manutenção</option>
+                            <option value="Aguardando Retirada">Aguardando Retirada</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" id="cancelAddVehicle" class="btn bg-gray-200 text-gray-800 px-4 py-2">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn bg-green-600 text-white px-4 py-2">
+                            Adicionar Veículo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal: Detalhes do Veículo -->
+    <div id="vehicleDetailsModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="modal-content w-full max-w-3xl mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Detalhes do Veículo</h2>
+                    <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-700">
+                        <i class='bx bx-x text-2xl'></i>
+                    </button>
+                </div>
+                <div id="vehicleDetailsContent">
+                    <!-- Conteúdo dinâmico será inserido aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal: Editar Veículo -->
+    <div id="editVehicleModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="modal-content w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Editar Veículo</h2>
+                    <button id="closeEditModal" class="text-gray-500 hover:text-gray-700">
+                        <i class='bx bx-x text-2xl'></i>
+                    </button>
+                </div>
+                <form id="editVehicleForm" class="space-y-4">
+                    <input type="hidden" name="id">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Placa</label>
+                        <input type="text" name="placa" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="ABC-1234">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
+                        <input type="text" name="modelo" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Gol 2018">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+                        <input type="text" name="cliente" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="João Silva">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                        <input type="tel" name="telefone" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="(11) 99999-9999">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
+                        <select name="responsavel" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Selecione um responsável</option>
+                            <option value="Mecânico 1">Mecânico 1</option>
+                            <option value="Mecânico 2">Mecânico 2</option>
+                            <option value="Mecânico 3">Mecânico 3</option>
+                            <option value="Supervisor">Supervisor</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" id="cancelEditVehicle" class="btn bg-gray-200 text-gray-800 px-4 py-2">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn bg-blue-600 text-white px-4 py-2">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">Mensagem de notificação</div>
+    <script>
+        // Configuração da API
+        const API_CONFIG = {
+            baseUrl: 'https://script.google.com/macros/s/AKfycbwPO3cgQqJOsuasyxfVqnWfRUh_0Y6NsuvyfxXGM3LJlI-MjWnHn1Pm2W611LsOubIEGQ/exec',
+            timeout: 10000
+        };
+
+        // Variáveis globais
+        let vehicles = [];
+        let currentVehicleId = null;
+        let currentColumn = null;
+        let isDragging = false;
+        let dragStartColumn = null;
+        
+        // Função para mostrar notificações
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Função para atualizar contadores
+        function updateStatusCounters() {
+            const counts = {
+                'Aguardando Mecânico': 0,
+                'Em Análise (Aguardando Evidências)': 0,
+                'Orçamento Enviado ao Cliente': 0,
+                'Orçamento Aprovado': 0,
+                'Veículo em Manutenção': 0,
+                'Aguardando Retirada': 0,
+                'Veículo Entregue': 0
+            };
+            
+            vehicles.forEach(vehicle => {
+                counts[vehicle.status] = (counts[vehicle.status] || 0) + 1;
+            });
+            
+            document.getElementById('count-aguardando-mecanico').textContent = counts['Aguardando Mecânico'];
+            document.getElementById('count-em-analise').textContent = counts['Em Análise (Aguardando Evidências)'];
+            document.getElementById('count-orcamento-enviado').textContent = counts['Orçamento Enviado ao Cliente'];
+            document.getElementById('count-orcamento-aprovado').textContent = counts['Orçamento Aprovado'];
+            document.getElementById('count-veiculo-em-manutencao').textContent = counts['Veículo em Manutenção'];
+            document.getElementById('count-aguardando-retirada').textContent = counts['Aguardando Retirada'];
+            document.getElementById('count-veiculo-entregue').textContent = counts['Veículo Entregue'];
+        }
+        
+        // Função para renderizar veículos
+        function renderVehicles() {
+            // Limpar todas as listas
+            document.querySelectorAll('.vehicle-list').forEach(list => {
+                list.innerHTML = '';
+            });
+            
+            // Renderizar cada veículo na coluna apropriada
+            vehicles.forEach(vehicle => {
+                const vehicleCard = document.createElement('div');
+                vehicleCard.className = `vehicle-card status-${vehicle.status.toLowerCase().replace(/ /g, '-').replace(/\(/g, '').replace(/\)/g, '').replace(/,/g, '')}`;
+                vehicleCard.dataset.id = vehicle.id;
+                vehicleCard.draggable = true;
+                
+                vehicleCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">${vehicle.modelo}</h3>
+                            <p class="text-sm text-gray-600">Placa: ${vehicle.placa}</p>
+                            <p class="text-sm text-gray-600">Cliente: ${vehicle.cliente}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge" style="background-color: ${getStatusColor(vehicle.status)}; color: white;">
+                                ${vehicle.status === 'Veículo Entregue' ? 'Entregue' : 
+                                  vehicle.status === 'Aguardando Retirada' ? 'Retirada' :
+                                  vehicle.status === 'Veículo em Manutenção' ? 'Manutenção' :
+                                  vehicle.status.replace(' (Aguardando Evidências)', '').replace(' ao Cliente', '')}
+                            </span>
+                            <div class="mt-2">
+                                <button class="edit-btn text-blue-600 hover:text-blue-800">
+                                    <i class='bx bx-edit'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const statusColumn = document.querySelector(`.status-column[data-status="${vehicle.status}"]`);
+                if (statusColumn) {
+                    statusColumn.querySelector('.vehicle-list').appendChild(vehicleCard);
+                }
+            });
+            
+            // Atualizar contadores
+            updateStatusCounters();
+            
+            // Atualizar hora da última atualização
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        
+        // Função para obter cor do status
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Aguardando Mecânico': return '#f59e0b';
+                case 'Em Análise (Aguardando Evidências)': return '#8b5cf6';
+                case 'Orçamento Enviado ao Cliente': return '#06b6d4';
+                case 'Orçamento Aprovado': return '#10b981';
+                case 'Veículo em Manutenção': return '#ef4444';
+                case 'Aguardando Retirada': return '#f97316';
+                case 'Veículo Entregue': return '#6b7280';
+                default: return '#9ca3af';
+            }
+        }
+        
+        // Função para buscar veículos da API
+        async function fetchVehicles() {
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}?action=getVehicles`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    vehicles = data.data;
+                    renderVehicles();
+                } else {
+                    showNotification('Erro ao carregar veículos: ' + (data.message || 'Erro desconhecido'), 'error');
+                }
+            } catch (error) {
+                showNotification('Erro de conexão com a API: ' + error.message, 'error');
+            }
+        }
+        
+        // Função para adicionar veículo
+        async function addVehicle(vehicleData) {
+            try {
+                const response = await fetch(API_CONFIG.baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addVehicle',
+                        data: vehicleData
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Veículo adicionado com sucesso!', 'success');
+                    fetchVehicles();
+                    return true;
+                } else {
+                    showNotification('Erro ao adicionar veículo: ' + (data.message || 'Erro desconhecido'), 'error');
+                    return false;
+                }
+            } catch (error) {
+                showNotification('Erro de conexão com a API: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        // Função para atualizar status do veículo
+        async function updateVehicleStatus(vehicleId, newStatus) {
+            try {
+                const response = await fetch(API_CONFIG.baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateStatus',
+                        id: vehicleId,
+                        status: newStatus
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Status atualizado com sucesso!', 'success');
+                    fetchVehicles();
+                    return true;
+                } else {
+                    showNotification('Erro ao atualizar status: ' + (data.message || 'Erro desconhecido'), 'error');
+                    // Reverter a mudança na interface
+                    fetchVehicles();
+                    return false;
+                }
+            } catch (error) {
+                showNotification('Erro de conexão com a API: ' + error.message, 'error');
+                // Reverter a mudança na interface
+                fetchVehicles();
+                return false;
+            }
+        }
+        
+        // Função para atualizar dados do veículo
+        async function updateVehicle(vehicleData) {
+            try {
+                const response = await fetch(API_CONFIG.baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateVehicle',
+                        data: vehicleData
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Veículo atualizado com sucesso!', 'success');
+                    fetchVehicles();
+                    return true;
+                } else {
+                    showNotification('Erro ao atualizar veículo: ' + (data.message || 'Erro desconhecido'), 'error');
+                    return false;
+                }
+            } catch (error) {
+                showNotification('Erro de conexão com a API: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar veículos
+            fetchVehicles();
+            
+            // Configurar botões
+            document.getElementById('refreshBtn').addEventListener('click', fetchVehicles);
+            document.getElementById('addVehicleBtn').addEventListener('click', () => {
+                document.getElementById('addVehicleModal').classList.remove('hidden');
+            });
+            document.getElementById('closeAddModal').addEventListener('click', () => {
+                document.getElementById('addVehicleModal').classList.add('hidden');
+            });
+            document.getElementById('cancelAddVehicle').addEventListener('click', () => {
+                document.getElementById('addVehicleModal').classList.add('hidden');
+            });
+            
+            document.getElementById('closeDetailsModal').addEventListener('click', () => {
+                document.getElementById('vehicleDetailsModal').classList.add('hidden');
+            });
+            
+            document.getElementById('closeEditModal').addEventListener('click', () => {
+                document.getElementById('editVehicleModal').classList.add('hidden');
+            });
+            document.getElementById('cancelEditVehicle').addEventListener('click', () => {
+                document.getElementById('editVehicleModal').classList.add('hidden');
+            });
+            
+            // Configurar formulário de adição
+            document.getElementById('addVehicleForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const vehicleData = {
+                    placa: formData.get('placa'),
+                    modelo: formData.get('modelo'),
+                    cliente: formData.get('cliente'),
+                    telefone: formData.get('telefone'),
+                    responsavel: formData.get('responsavel'),
+                    status: formData.get('status')
+                };
+                
+                const success = await addVehicle(vehicleData);
+                if (success) {
+                    e.target.reset();
+                    document.getElementById('addVehicleModal').classList.add('hidden');
+                }
+            });
+            
+            // Configurar formulário de edição
+            document.getElementById('editVehicleForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const vehicleData = {
+                    id: formData.get('id'),
+                    placa: formData.get('placa'),
+                    modelo: formData.get('modelo'),
+                    cliente: formData.get('cliente'),
+                    telefone: formData.get('telefone'),
+                    responsavel: formData.get('responsavel')
+                };
+                
+                const success = await updateVehicle(vehicleData);
+                if (success) {
+                    document.getElementById('editVehicleModal').classList.add('hidden');
+                }
+            });
+            
+            // Configurar eventos de arrastar e soltar
+            document.querySelectorAll('.status-column').forEach(column => {
+                column.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    column.classList.add('drag-over');
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('drag-over');
+                });
+                
+                column.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    column.classList.remove('drag-over');
+                    
+                    const vehicleId = e.dataTransfer.getData('vehicleId');
+                    const newStatus = column.dataset.status;
+                    
+                    // Encontrar o veículo atual
+                    const vehicle = vehicles.find(v => v.id == vehicleId);
+                    if (vehicle && vehicle.status !== newStatus) {
+                        // Atualizar status no backend
+                        await updateVehicleStatus(vehicleId, newStatus);
+                    }
+                });
+            });
+            
+            // Configurar eventos de clique para editar
+            document.addEventListener('click', e => {
+                // Editar veículo
+                if (e.target.closest('.edit-btn')) {
+                    const vehicleCard = e.target.closest('.vehicle-card');
+                    const vehicleId = vehicleCard.dataset.id;
+                    
+                    const vehicle = vehicles.find(v => v.id == vehicleId);
+                    if (vehicle) {
+                        // Preencher formulário de edição
+                        const form = document.getElementById('editVehicleForm');
+                        form.querySelector('input[name="id"]').value = vehicle.id;
+                        form.querySelector('input[name="placa"]').value = vehicle.placa;
+                        form.querySelector('input[name="modelo"]').value = vehicle.modelo;
+                        form.querySelector('input[name="cliente"]').value = vehicle.cliente;
+                        form.querySelector('input[name="telefone"]').value = vehicle.telefone;
+                        form.querySelector('select[name="responsavel"]').value = vehicle.responsavel;
+                        
+                        // Mostrar modal
+                        document.getElementById('editVehicleModal').classList.remove('hidden');
+                    }
+                }
+            });
+            
+            // Configurar eventos de arrastar
+            document.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('vehicle-card')) {
+                    isDragging = true;
+                    dragStartColumn = e.target.closest('.status-column');
+                    e.dataTransfer.setData('vehicleId', e.target.dataset.id);
+                    setTimeout(() => {
+                        e.target.classList.add('dragging');
+                    }, 0);
+                }
+            });
+            
+            document.addEventListener('dragend', e => {
+                if (e.target.classList.contains('vehicle-card')) {
+                    isDragging = false;
+                    e.target.classList.remove('dragging');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
