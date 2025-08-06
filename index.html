@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Oficina - Sistema de Gestão</title>
+    <title>thIAguinho - Gestão de Oficina</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -184,12 +184,12 @@
                 <div class="flex items-center space-x-4">
                     <i class='bx bx-wrench text-3xl text-blue-600'></i>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Dashboard Oficina</h1>
-                        <p class="text-sm text-gray-600">Sistema de Gestão de Veículos</p>
+                        <h1 class="text-2xl font-bold text-gray-800">thIAguinho</h1>
+                        <p class="text-sm text-gray-600">Gestão de Oficina</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="connection-status connected">
+                    <div id="connectionStatus" class="connection-status connected">
                         <i class='bx bx-check-circle mr-1'></i>
                         Conectado
                     </div>
@@ -270,7 +270,7 @@
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
                             <i class='bx bx-send text-cyan-500 mr-2'></i>
-                            Orçamento Enviado
+                            Enviado ao Cliente
                         </h3>
                     </div>
                     <div class="p-4 vehicle-list" id="list-orcamento-enviado"></div>
@@ -280,7 +280,7 @@
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
                             <i class='bx bx-check-circle text-green-500 mr-2'></i>
-                            Aprovado
+                            ✅ Aprovado
                         </h3>
                     </div>
                     <div class="p-4 vehicle-list" id="list-orcamento-aprovado"></div>
@@ -358,10 +358,12 @@
                         <select name="responsavel" 
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Selecione um responsável</option>
-                            <option value="Mecânico 1">Mecânico 1</option>
-                            <option value="Mecânico 2">Mecânico 2</option>
-                            <option value="Mecânico 3">Mecânico 3</option>
-                            <option value="Supervisor">Supervisor</option>
+                            <option value="Marcelo">Marcelo</option>
+                            <option value="Gustavo">Gustavo</option>
+                            <option value="Fernando">Fernando</option>
+                            <option value="Thiago Ventura">Thiago Ventura</option>
+                            <option value="William Barboza">William Barboza</option>
+                            <option value="Augusto Pinto">Augusto Pinto</option>
                         </select>
                     </div>
                     <div>
@@ -445,10 +447,12 @@
                         <select name="responsavel" 
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Selecione um responsável</option>
-                            <option value="Mecânico 1">Mecânico 1</option>
-                            <option value="Mecânico 2">Mecânico 2</option>
-                            <option value="Mecânico 3">Mecânico 3</option>
-                            <option value="Supervisor">Supervisor</option>
+                            <option value="Marcelo">Marcelo</option>
+                            <option value="Gustavo">Gustavo</option>
+                            <option value="Fernando">Fernando</option>
+                            <option value="Thiago Ventura">Thiago Ventura</option>
+                            <option value="William Barboza">William Barboza</option>
+                            <option value="Augusto Pinto">Augusto Pinto</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -478,6 +482,23 @@
         let currentColumn = null;
         let isDragging = false;
         let dragStartColumn = null;
+        
+        // Função para atualizar status de conexão
+        function updateConnectionStatus(isConnected) {
+            const statusElement = document.getElementById('connectionStatus');
+            const iconElement = statusElement.querySelector('i');
+            const textElement = statusElement.querySelector('span');
+            
+            if (isConnected) {
+                statusElement.className = 'connection-status connected';
+                iconElement.className = 'bx bx-check-circle mr-1';
+                statusElement.innerHTML = `<i class='bx bx-check-circle mr-1'></i> Conectado`;
+            } else {
+                statusElement.className = 'connection-status disconnected';
+                iconElement.className = 'bx bx-x-circle mr-1';
+                statusElement.innerHTML = `<i class='bx bx-x-circle mr-1'></i> Desconectado`;
+            }
+        }
         
         // Função para mostrar notificações
         function showNotification(message, type = 'info') {
@@ -584,17 +605,27 @@
         // Função para buscar veículos da API
         async function fetchVehicles() {
             try {
-                const response = await fetch(`${API_CONFIG.baseUrl}?action=getVehicles`);
+                const response = await fetch(`${API_CONFIG.baseUrl}?action=getVehicles`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
                 const data = await response.json();
                 
-                if (data.success) {
-                    vehicles = data.data;
+                if (data.success || data.data) {
+                    vehicles = data.data || [];
                     renderVehicles();
+                    updateConnectionStatus(true);
                 } else {
-                    showNotification('Erro ao carregar veículos: ' + (data.message || 'Erro desconhecido'), 'error');
+                    showNotification('Erro ao carregar veículos: ' + (data.error || 'Erro desconhecido'), 'error');
+                    updateConnectionStatus(false);
                 }
             } catch (error) {
+                console.error('Erro de conexão:', error);
                 showNotification('Erro de conexão com a API: ' + error.message, 'error');
+                updateConnectionStatus(false);
             }
         }
         
@@ -608,7 +639,7 @@
                     },
                     body: JSON.stringify({
                         action: 'addVehicle',
-                         vehicleData
+                        vehicleData: vehicleData
                     })
                 });
                 
@@ -619,7 +650,7 @@
                     fetchVehicles();
                     return true;
                 } else {
-                    showNotification('Erro ao adicionar veículo: ' + (data.message || 'Erro desconhecido'), 'error');
+                    showNotification('Erro ao adicionar veículo: ' + (data.error || 'Erro desconhecido'), 'error');
                     return false;
                 }
             } catch (error) {
@@ -637,9 +668,9 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'updateStatus',
-                        id: vehicleId,
-                        status: newStatus
+                        action: 'updateVehicle',
+                        vehicleId: vehicleId,
+                        updates: { status: newStatus }
                     })
                 });
                 
@@ -650,7 +681,7 @@
                     fetchVehicles();
                     return true;
                 } else {
-                    showNotification('Erro ao atualizar status: ' + (data.message || 'Erro desconhecido'), 'error');
+                    showNotification('Erro ao atualizar status: ' + (data.error || 'Erro desconhecido'), 'error');
                     // Reverter a mudança na interface
                     fetchVehicles();
                     return false;
@@ -673,7 +704,14 @@
                     },
                     body: JSON.stringify({
                         action: 'updateVehicle',
-                         vehicleData
+                        vehicleId: vehicleData.id,
+                        updates: {
+                            placa: vehicleData.placa,
+                            modelo: vehicleData.modelo,
+                            cliente: vehicleData.cliente,
+                            telefone: vehicleData.telefone,
+                            responsavel: vehicleData.responsavel
+                        }
                     })
                 });
                 
@@ -684,7 +722,7 @@
                     fetchVehicles();
                     return true;
                 } else {
-                    showNotification('Erro ao atualizar veículo: ' + (data.message || 'Erro desconhecido'), 'error');
+                    showNotification('Erro ao atualizar veículo: ' + (data.error || 'Erro desconhecido'), 'error');
                     return false;
                 }
             } catch (error) {
@@ -695,7 +733,7 @@
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            // Carregar veículos
+            // Verificar conexão inicial
             fetchVehicles();
             
             // Configurar botões
