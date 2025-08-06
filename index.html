@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>thIAguinho 馃洜锔� - Dashboard Oficina</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>thIAguinho 🛠️ - Dashboard Oficina</title>  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100% );
       min-height: 100vh;
     }
     .dashboard-container {
@@ -189,19 +188,11 @@
 </head>
 <body>
 
-  <!-- Tela de Sele莽茫o de Usu谩rio -->
+  <!-- Tela de Seleção de Usuário -->
   <div id="userScreen" class="flex items-center justify-center min-h-screen bg-blue-50 p-4">
-    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-center">
-      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho 馃洜锔�</h1>
+    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md text-center">      <h1 class="text-2xl font-bold text-blue-800 mb-6">thIAguinho 🛠️</h1>
       <p class="text-gray-600 mb-6">Selecione seu nome para entrar:</p>
-      <div class="grid grid-cols-1 gap-3">
-        <div onclick="login('Augusto')" class="user-btn">Augusto (Gestor)</div>
-        <div onclick="login('William Barbosa')" class="user-btn">William Barbosa (Atendente)</div>
-        <div onclick="login('Thiago Ventura Valencio')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>
-        <div onclick="login('Fernando')" class="user-btn">Fernando (Mec芒nico)</div>
-        <div onclick="login('Gustavo')" class="user-btn">Gustavo (Mec芒nico)</div>
-        <div onclick="login('Marcelo')" class="user-btn">Marcelo (Mec芒nico)</div>
-      </div>
+      <div class="grid grid-cols-1 gap-3">        <div onclick="window.login(\'Augusto\')" class="user-btn">Augusto (Gestor)</div>        <div onclick="window.login(\'William Barbosa\')" class="user-btn">William Barbosa (Atendente)</div>        <div onclick="window.login(\'Thiago Ventura Valencio\')" class="user-btn">Thiago Ventura Valencio (Atendente)</div>        <div onclick="window.login(\'Fernando\')" class="user-btn">Fernando (Mecânico)<        <div onclick="window.login(\'Gustavo\')" class="user-btn">Gustavo (Mecânico)</div>        <div onclick="window.login(\'Marcelo\')" class="user-btn">Marcelo (Mecânico)</div>      </div>
     </div>
   </div>
 
@@ -211,28 +202,28 @@
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <i class='bx bx-wrench text-3xl text-blue-600'></i>
+                    <i class=\'bx bx-wrench text-3xl text-blue-600\'></i>
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800">Dashboard Oficina</h1>
-                        <p class="text-sm text-gray-600">Sistema de Gest茫o de Ve铆culos</p>
+                        <p class="text-sm text-gray-600">Sistema de Gestão de Veículos</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="connection-status demo" id="connectionStatus">
-                        <i class='bx bx-info-circle mr-1'></i>
-                        Modo Demonstra莽茫o
+                        <i class=\'bx bx-info-circle mr-1\'></i>
+                        Modo Demonstração
                     </div>
                     <div class="text-right">
-                        <p class="text-sm text-gray-600">脷ltima atualiza莽茫o</p>
+                        <p class="text-sm text-gray-600">Última atualização</p>
                         <p id="lastUpdate" class="text-sm font-semibold text-gray-800">--:--</p>
                     </div>
                     <button id="refreshBtn" class="btn bg-blue-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class='bx bx-refresh'></i>
+                        <i class=\'bx bx-refresh\'></i>
                         <span>Atualizar</span>
                     </button>
                     <button id="addVehicleBtn" class="btn bg-green-600 text-white px-4 py-2 flex items-center space-x-2">
-                        <i class='bx bx-plus'></i>
-                        <span>Novo Ve铆culo</span>
+                        <i class=\'bx bx-plus\'></i>
+                        <span>Novo Veículo</span>
                     </button>
                     <button id="logoutButton" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Sair</button>
                 </div>
@@ -245,125 +236,125 @@
             <!-- Status Summary -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
                 <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Aguardando Mec芒nico">0</div>
+                    <div class="text-2xl font-bold" id="count-Aguardando Mecânico">0</div>
                     <div class="text-sm">Aguardando</div>
                 </div>
                 <div class="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Em An谩lise (Aguardando Evid锚ncias)">0</div>
-                    <div class="text-sm">Em An谩lise</div>
+                    <div class="text-2xl font-bold" id="count-Em Análise (Aguardando Evidências)">0</div>
+                    <div class="text-sm">Em Análise</div>
                 </div>
                 <div class="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Or莽amento Enviado ao Cliente">0</div>
+                    <div class="text-2xl font-bold" id="count-Orçamento Enviado ao Cliente">0</div>
                     <div class="text-sm">Enviado</div>
                 </div>
                 <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Or莽amento Aprovado">0</div>
+                    <div class="text-2xl font-bold" id="count-Orçamento Aprovado">0</div>
                     <div class="text-sm">Aprovado</div>
                 </div>
                 <div class="bg-gradient-to-r from-red-400 to-red-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Ve铆culo em Manuten莽茫o">0</div>
-                    <div class="text-sm">Manuten莽茫o</div>
+                    <div class="text-2xl font-bold" id="count-Veículo em Manutenção">0</div>
+                    <div class="text-sm">Manutenção</div>
                 </div>
                 <div class="bg-gradient-to-r from-orange-400 to-orange-600 text-white p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold" id="count-Aguardando Retirada">0</div>
                     <div class="text-sm">Retirada</div>
                 </div>
                 <div class="bg-gradient-to-r from-gray-400 to-gray-600 text-white p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold" id="count-Ve铆culo Entregue">0</div>
+                    <div class="text-2xl font-bold" id="count-Veículo Entregue">0</div>
                     <div class="text-sm">Entregue</div>
                 </div>
             </div>
 
             <!-- Kanban Board -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-6">
-                <!-- Aguardando Mec芒nico -->
-                <div class="status-column" data-status="Aguardando Mec芒nico">
+                <!-- Aguardando Mecânico -->
+                <div class="status-column" data-status="Aguardando Mecânico">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-time-five text-yellow-500 mr-2'></i>
-                            Aguardando Mec芒nico
+                            <i class=\'bx bx-time-five text-yellow-500 mr-2\'></i>
+                            Aguardando Mecânico
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Aguardando Mec芒nico"></div>
+                    <div class="p-4 vehicle-list" id="list-Aguardando Mecânico"></div>
                 </div>
 
-                <!-- Em An谩lise -->
-                <div class="status-column" data-status="Em An谩lise (Aguardando Evid锚ncias)">
+                <!-- Em Análise -->
+                <div class="status-column" data-status="Em Análise (Aguardando Evidências)">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-search text-purple-500 mr-2'></i>
-                            Em An谩lise
+                            <i class=\'bx bx-search text-purple-500 mr-2\'></i>
+                            Em Análise
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Em An谩lise (Aguardando Evid锚ncias)"></div>
+                    <div class="p-4 vehicle-list" id="list-Em Análise (Aguardando Evidências)"></div>
                 </div>
 
-                <!-- Or莽amento Enviado -->
-                <div class="status-column" data-status="Or莽amento Enviado ao Cliente">
+                <!-- Orçamento Enviado -->
+                <div class="status-column" data-status="Orçamento Enviado ao Cliente">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-send text-cyan-500 mr-2'></i>
-                            Or莽amento Enviado
+                            <i class=\'bx bx-send text-cyan-500 mr-2\'></i>
+                            Orçamento Enviado
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Or莽amento Enviado ao Cliente"></div>
+                    <div class="p-4 vehicle-list" id="list-Orçamento Enviado ao Cliente"></div>
                 </div>
 
-                <!-- Or莽amento Aprovado -->
-                <div class="status-column" data-status="Or莽amento Aprovado">
+                <!-- Orçamento Aprovado -->
+                <div class="status-column" data-status="Orçamento Aprovado">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                            <i class=\'bx bx-check-circle text-green-500 mr-2\'></i>
                             Aprovado
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Or莽amento Aprovado"></div>
+                    <div class="p-4 vehicle-list" id="list-Orçamento Aprovado"></div>
                 </div>
 
-                <!-- Ve铆culo em Manuten莽茫o -->
-                <div class="status-column" data-status="Ve铆culo em Manuten莽茫o">
+                <!-- Veículo em Manutenção -->
+                <div class="status-column" data-status="Veículo em Manutenção">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-wrench text-red-500 mr-2'></i>
-                            Em Manuten莽茫o
+                            <i class=\'bx bx-wrench text-red-500 mr-2\'></i>
+                            Em Manutenção
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Ve铆culo em Manuten莽茫o"></div>
+                    <div class="p-4 vehicle-list" id="list-Veículo em Manutenção"></div>
                 </div>
 
                 <!-- Aguardando Retirada -->
                 <div class="status-column" data-status="Aguardando Retirada">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-package text-orange-500 mr-2'></i>
+                            <i class=\'bx bx-package text-orange-500 mr-2\'></i>
                             Aguardando Retirada
                         </h3>
                     </div>
                     <div class="p-4 vehicle-list" id="list-Aguardando Retirada"></div>
                 </div>
 
-                <!-- Ve铆culo Entregue -->
-                <div class="status-column" data-status="Ve铆culo Entregue">
+                <!-- Veículo Entregue -->
+                <div class="status-column" data-status="Veículo Entregue">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-800 flex items-center">
-                            <i class='bx bx-check text-gray-500 mr-2'></i>
+                            <i class=\'bx bx-check text-gray-500 mr-2\'></i>
                             Entregue
                         </h3>
                     </div>
-                    <div class="p-4 vehicle-list" id="list-Ve铆culo Entregue"></div>
+                    <div class="p-4 vehicle-list" id="list-Veículo Entregue"></div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal: Adicionar Ve铆culo -->
+    <!-- Modal: Adicionar Veículo -->
     <div id="addVehicleModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="modal-content w-full max-w-md mx-4">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Novo Ve铆culo</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Novo Veículo</h2>
                     <button id="closeAddModal" class="text-gray-500 hover:text-gray-700">
-                        <i class='bx bx-x text-2xl'></i>
+                        <i class=\'bx bx-x text-2xl\'></i>
                     </button>
                 </div>
                 <form id="addVehicleForm" class="space-y-4">
@@ -383,7 +374,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
                         <input type="text" name="cliente" required 
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                               placeholder="Jo茫o Silva">
+                               placeholder="João Silva">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
@@ -392,83 +383,83 @@
                                placeholder="(11) 99999-9999">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Respons谩vel</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
                         <select name="responsavel" 
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Selecione um respons谩vel</option>
+                            <option value="">Selecione um responsável</option>
                             <option value="Augusto">Augusto (Gestor)</option>
                             <option value="William Barbosa">William Barbosa (Atendente)</option>
                             <option value="Thiago Ventura Valencio">Thiago Ventura Valencio (Atendente)</option>
-                            <option value="Fernando">Fernando (Mec芒nico)</option>
-                            <option value="Gustavo">Gustavo (Mec芒nico)</option>
-                            <option value="Marcelo">Marcelo (Mec芒nico)</option>
+                            <option value="Fernando">Fernando (Mecânico)</option>
+                            <option value="Gustavo">Gustavo (Mecânico)</option>
+                            <option value="Marcelo">Marcelo (Mecânico)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Observa莽玫es</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
                         <textarea name="observacoes" rows="3" 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="Descreva observa莽玫es importantes..."></textarea>
+                                  placeholder="Descreva observações importantes..."></textarea>
                     </div>
                     <button type="submit" class="btn bg-blue-600 text-white w-full py-3">
-                        Adicionar Ve铆culo
+                        Adicionar Veículo
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Detalhes do Ve铆culo -->
+    <!-- Modal: Detalhes do Veículo -->
     <div id="vehicleDetailsModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="modal-content w-full max-w-2xl mx-4">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Detalhes do Ve铆culo</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Detalhes do Veículo</h2>
                     <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-700">
-                        <i class='bx bx-x text-2xl'></i>
+                        <i class=\'bx bx-x text-2xl\'></i>
                     </button>
                 </div>
                 <div id="detailsContent" class="space-y-4 text-gray-700">
-                    <!-- Conte煤do din芒mico aqui -->
+                    <!-- Conteúdo dinâmico aqui -->
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
                     <button id="editVehicleBtn" class="btn bg-yellow-500 text-white px-4 py-2">
-                        <i class='bx bx-edit'></i> Editar
+                        <i class=\'bx bx-edit\'></i> Editar
                     </button>
                     <button id="addEvidenceBtn" class="btn bg-purple-600 text-white px-4 py-2">
-                        <i class='bx bx-camera'></i> Adicionar Evid锚ncia
+                        <i class=\'bx bx-camera\'></i> Adicionar Evidência
                     </button>
                     <button id="deleteVehicleBtn" class="btn bg-red-600 text-white px-4 py-2">
-                        <i class='bx bx-trash'></i> Excluir
+                        <i class=\'bx bx-trash\'></i> Excluir
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Adicionar Evid锚ncia -->
+    <!-- Modal: Adicionar Evidência -->
     <div id="addEvidenceModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="modal-content w-full max-w-md mx-4">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Adicionar Evid锚ncia</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Adicionar Evidência</h2>
                     <button id="closeAddEvidenceModal" class="text-gray-500 hover:text-gray-700">
-                        <i class='bx bx-x text-2xl'></i>
+                        <i class=\'bx bx-x text-2xl\'></i>
                     </button>
                 </div>
                 <form id="addEvidenceForm" class="space-y-4">
                     <input type="hidden" name="placa" id="evidencePlacaInput">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Problema/Coment谩rio</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Problema/Comentário</label>
                         <textarea name="problema" rows="3" required
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   placeholder="Descreva o problema encontrado..."></textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Pe莽as Necess谩rias</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Peças Necessárias</label>
                         <input type="text" name="pecas" 
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                               placeholder="Ex: Filtro de 贸leo, Pastilha de freio">
+                               placeholder="Ex: Filtro de óleo, Pastilha de freio">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Valor Estimado (R$)</label>
@@ -477,27 +468,27 @@
                                placeholder="Ex: 150.00">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">M铆dias (Fotos/V铆deos)</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mídias (Fotos/Vídeos)</label>
                         <input type="file" name="midias" id="evidenceMidiasInput" accept="image/*,video/*" multiple
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <div id="evidencePreview" class="file-preview"></div>
                     </div>
                     <button type="submit" class="btn bg-purple-600 text-white w-full py-3">
-                        Adicionar Evid锚ncia
+                        Adicionar Evidência
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Editar Ve铆culo -->
+    <!-- Modal: Editar Veículo -->
     <div id="editVehicleModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="modal-content w-full max-w-md mx-4">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Editar Ve铆culo</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Editar Veículo</h2>
                     <button id="closeEditModal" class="text-gray-500 hover:text-gray-700">
-                        <i class='bx bx-x text-2xl'></i>
+                        <i class=\'bx bx-x text-2xl\'></i>
                     </button>
                 </div>
                 <form id="editVehicleForm" class="space-y-4">
@@ -523,54 +514,54 @@
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Respons谩vel</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
                         <select name="responsavel" id="editResponsavel"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Selecione um respons谩vel</option>
+                            <option value="">Selecione um responsável</option>
                             <option value="Augusto">Augusto (Gestor)</option>
                             <option value="William Barbosa">William Barbosa (Atendente)</option>
                             <option value="Thiago Ventura Valencio">Thiago Ventura Valencio (Atendente)</option>
-                            <option value="Fernando">Fernando (Mec芒nico)</option>
-                            <option value="Gustavo">Gustavo (Mec芒nico)</option>
-                            <option value="Marcelo">Marcelo (Mec芒nico)</option>
+                            <option value="Fernando">Fernando (Mecânico)</option>
+                            <option value="Gustavo">Gustavo (Mecânico)</option>
+                            <option value="Marcelo">Marcelo (Mecânico)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Observa莽玫es</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
                         <textarea name="observacoes" rows="3" id="editObservacoes"
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
                     </div>
                     <button type="submit" class="btn bg-blue-600 text-white w-full py-3">
-                        Salvar Altera莽玫es
+                        Salvar Alterações
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Notifica莽玫es -->
+    <!-- Notificações -->
     <div id="notification" class="notification hidden"></div>
 
     <script>
-        // --- CONFIGURA脟脙O DA API --- //
+        // --- CONFIGURAÇÃO DA API --- //
         const API_CONFIG = {
-            baseUrl: 'https://script.google.com/macros/s/AKfycbwswv6fE-ZbKdpquvKrRiOmFVd_flfZ96JGCGGT9Zk2Zu4sAkGOoDetiIT-Kjj0r7XbUw/exec', // <-- SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT
-            timeout: 10000, // Tempo limite para requisi莽玫es (10 segundos)
-            demoMode: false // Mude para 'false' para usar o Google Sheets real
+            baseUrl: \'https://script.google.com/macros/s/AKfycbwswv6fE-ZbKdpquvKrRiOmFVd_flfZ96JGCGGT9Zk2Zu4sAkGOoDetiIT-Kjj0r7XbUw/exec\', // <-- SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT
+            timeout: 10000, // Tempo limite para requisições (10 segundos )
+            demoMode: false // Mude para \'false\' para usar o Google Sheets real
         };
 
-        // --- VARI脕VEIS GLOBAIS --- //
-        let currentVehicleId = null; // Usado para editar e adicionar evid锚ncias
-        let usuarioLogado = null; // Usu谩rio logado do thIAguinho
+        // --- VARIÁVEIS GLOBAIS --- //
+        let currentVehicleId = null; // Usado para editar e adicionar evidências
+        let usuarioLogado = null; // Usuário logado do thIAguinho
 
         const statusMap = {
-            'Aguardando Mec芒nico': 'aguardando-mecanico',
-            'Em An谩lise (Aguardando Evid锚ncias)': 'em-analise',
-            'Or莽amento Enviado ao Cliente': 'orcamento-enviado',
-            'Or莽amento Aprovado': 'orcamento-aprovado',
-            'Ve铆culo em Manuten莽茫o': 'veiculo-em-manutencao',
-            'Aguardando Retirada': 'aguardando-retirada',
-            'Ve铆culo Entregue': 'veiculo-entregue'
+            \'Aguardando Mecânico\': \'aguardando-mecanico\',
+            \'Em Análise (Aguardando Evidências)\': \'em-analise\',
+            \'Orçamento Enviado ao Cliente\': \'orcamento-enviado\',
+            \'Orçamento Aprovado\': \'orcamento-aprovado\',
+            \'Veículo em Manutenção\': \'veiculo-em-manutencao\',
+            \'Aguardando Retirada\': \'aguardando-retirada\',
+            \'Veículo Entregue\': \'veiculo-entregue\'
         };
 
         const reverseStatusMap = Object.fromEntries(
@@ -578,92 +569,92 @@
         );
 
         const statusColors = {
-            'Aguardando Mec芒nico': 'yellow-500',
-            'Em An谩lise (Aguardando Evid锚ncias)': 'purple-500',
-            'Or莽amento Enviado ao Cliente': 'cyan-500',
-            'Or莽amento Aprovado': 'green-500',
-            'Ve铆culo em Manuten莽茫o': 'red-500',
-            'Aguardando Retirada': 'orange-500',
-            'Ve铆culo Entregue': 'gray-500'
+            \'Aguardando Mecânico\': \'yellow-500\',
+            \'Em Análise (Aguardando Evidências)\': \'purple-500\',
+            \'Orçamento Enviado ao Cliente\': \'cyan-500\',
+            \'Orçamento Aprovado\': \'green-500\',
+            \'Veículo em Manutenção\': \'red-500\',
+            \'Aguardando Retirada\': \'orange-500\',
+            \'Veículo Entregue\': \'gray-500\'
         };
 
         // --- ELEMENTOS DO DOM --- //
-        const userScreen = document.getElementById('userScreen');
-        const app = document.getElementById('app');
-        const userDisplay = document.getElementById('userDisplay');
-        const logoutButton = document.getElementById('logoutButton');
+        const userScreen = document.getElementById(\'userScreen\');
+        const app = document.getElementById(\'app\');
+         // const userDisplay = document.getElementById(\'userDisplay\'); // Removido, pois não há elemento com este ID // Removido, pois não há elemento com este ID
+        const logoutButton = document.getElementById(\'logoutButton\');
 
-        const addVehicleModal = document.getElementById('addVehicleModal');
-        const closeAddModal = document.getElementById('closeAddModal');
-        const addVehicleForm = document.getElementById('addVehicleForm');
-        const addVehicleBtn = document.getElementById('addVehicleBtn');
+        const addVehicleModal = document.getElementById(\'addVehicleModal\');
+        const closeAddModal = document.getElementById(\'closeAddModal\');
+        const addVehicleForm = document.getElementById(\'addVehicleForm\');
+        const addVehicleBtn = document.getElementById(\'addVehicleBtn\');
 
-        const vehicleDetailsModal = document.getElementById('vehicleDetailsModal');
-        const closeDetailsModal = document.getElementById('closeAddModal'); // Corrigido para o ID correto
-        const detailsContent = document.getElementById('detailsContent');
-        const editVehicleBtn = document.getElementById('editVehicleBtn');
-        const addEvidenceBtn = document.getElementById('addEvidenceBtn');
-        const deleteVehicleBtn = document.getElementById('deleteVehicleBtn');
+        const vehicleDetailsModal = document.getElementById(\'vehicleDetailsModal\');
+        const closeDetailsModal = document.getElementById(\'closeDetailsModal\'); // Corrigido para o ID correto
+        const detailsContent = document.getElementById(\'detailsContent\');
+        const editVehicleBtn = document.getElementById(\'editVehicleBtn\');
+        const addEvidenceBtn = document.getElementById(\'addEvidenceBtn\');
+        const deleteVehicleBtn = document.getElementById(\'deleteVehicleBtn\');
 
-        const addEvidenceModal = document.getElementById('addEvidenceModal');
-        const closeAddEvidenceModal = document.getElementById('closeAddEvidenceModal');
-        const addEvidenceForm = document.getElementById('addEvidenceForm');
-        const evidencePlacaInput = document.getElementById('evidencePlacaInput');
-        const evidenceMidiasInput = document.getElementById('evidenceMidiasInput');
-        const evidencePreview = document.getElementById('evidencePreview');
+        const addEvidenceModal = document.getElementById(\'addEvidenceModal\');
+        const closeAddEvidenceModal = document.getElementById(\'closeAddEvidenceModal\');
+        const addEvidenceForm = document.getElementById(\'addEvidenceForm\');
+        const evidencePlacaInput = document.getElementById(\'evidencePlacaInput\');
+        const evidenceMidiasInput = document.getElementById(\'evidenceMidiasInput\');
+        const evidencePreview = document.getElementById(\'evidencePreview\');
 
-        const editVehicleModal = document.getElementById('editVehicleModal');
-        const closeEditModal = document.getElementById('closeEditModal');
-        const editVehicleForm = document.getElementById('editVehicleForm');
-        const editVehicleId = document.getElementById('editVehicleId');
-        const editPlaca = document.getElementById('editPlaca');
-        const editModelo = document.getElementById('editModelo');
-        const editCliente = document.getElementById('editCliente');
-        const editTelefone = document.getElementById('editTelefone');
-        const editResponsavel = document.getElementById('editResponsavel');
-        const editObservacoes = document.getElementById('editObservacoes');
+        const editVehicleModal = document.getElementById(\'editVehicleModal\');
+        const closeEditModal = document.getElementById(\'closeEditModal\');
+        const editVehicleForm = document.getElementById(\'editVehicleForm\');
+        const editVehicleId = document.getElementById(\'editVehicleId\');
+        const editPlaca = document.getElementById(\'editPlaca\');
+        const editModelo = document.getElementById(\'editModelo\');
+        const editCliente = document.getElementById(\'editCliente\');
+        const editTelefone = document.getElementById(\'editTelefone\');
+        const editResponsavel = document.getElementById(\'editResponsavel\');
+        const editObservacoes = document.getElementById(\'editObservacoes\');
 
-        const refreshBtn = document.getElementById('refreshBtn');
-        const lastUpdateSpan = document.getElementById('lastUpdate');
-        const connectionStatusDiv = document.getElementById('connectionStatus');
-        const notificationDiv = document.getElementById('notification');
+        const refreshBtn = document.getElementById(\'refreshBtn\');
+        const lastUpdateSpan = document.getElementById(\'lastUpdate\');
+        const connectionStatusDiv = document.getElementById(\'connectionStatus\');
+        const notificationDiv = document.getElementById(\'notification\');
 
-        // --- FUN脟脮ES DE UTILIDADE --- //
-        function showNotification(message, type = 'info') {
+        // --- FUNÇÕES DE UTILIDADE --- //
+        function showNotification(message, type = \'info\') {
             notificationDiv.textContent = message;
             notificationDiv.className = `notification show ${type}`;
             setTimeout(() => {
-                notificationDiv.classList.remove('show');
+                notificationDiv.classList.remove(\'show\');
             }, 3000);
         }
 
         function setLoading(isLoading) {
-            document.body.classList.toggle('loading', isLoading);
+            document.body.classList.toggle(\'loading\', isLoading);
             refreshBtn.disabled = isLoading;
             addVehicleBtn.disabled = isLoading;
         }
 
         function updateConnectionStatus(isConnected) {
             if (API_CONFIG.demoMode) {
-                connectionStatusDiv.className = 'connection-status demo';
-                connectionStatusDiv.innerHTML = '<i class='bx bx-info-circle mr-1'></i> Modo Demonstra莽茫o';
+                connectionStatusDiv.className = \'connection-status demo\';
+                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-info-circle mr-1\'></i> Modo Demonstração\';
             } else if (isConnected) {
-                connectionStatusDiv.className = 'connection-status connected';
-                connectionStatusDiv.innerHTML = '<i class='bx bx-check-circle mr-1'></i> Conectado';
+                connectionStatusDiv.className = \'connection-status connected\';
+                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-check-circle mr-1\'></i> Conectado\';
             } else {
-                connectionStatusDiv.className = 'connection-status disconnected';
-                connectionStatusDiv.innerHTML = '<i class='bx bx-x-circle mr-1'></i> Desconectado';
+                connectionStatusDiv.className = \'connection-status disconnected\';
+                connectionStatusDiv.innerHTML = \'<i class=\'bx bx-x-circle mr-1\'></i> Desconectado\';
             }
         }
 
         function updateLastUpdate() {
-            lastUpdateSpan.textContent = new Date().toLocaleTimeString('pt-BR');
+            lastUpdateSpan.textContent = new Date().toLocaleTimeString(\'pt-BR\');
         }
 
-        // --- FUN脟脮ES DE COMUNICA脟脙O COM GOOGLE APPS SCRIPT --- //
+        // --- FUNÇÕES DE COMUNICAÇÃO COM GOOGLE APPS SCRIPT --- //
         async function callAppsScript(action, data = {}) {
             if (API_CONFIG.demoMode) {
-                console.warn('Modo demonstra莽茫o ativo. Nenhuma chamada real 脿 API.');
+                console.warn(\'Modo demonstração ativo. Nenhuma chamada real à API.\');
                 return handleDemoData(action, data);
             }
 
@@ -671,27 +662,27 @@
             updateConnectionStatus(true); // Assume conectado durante a chamada
             try {
                 const response = await fetch(API_CONFIG.baseUrl, {
-                    method: 'POST',
+                    method: \'POST\',
                     headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', // Necess谩rio para Apps Script
+                        \'Content-Type\': \'text/plain;charset=utf-8\', // Necessário para Apps Script
                     },
                     body: JSON.stringify({ action, ...data }),
-                    timeout: API_CONFIG.timeout // Adiciona timeout
+                    // timeout: API_CONFIG.timeout // Removido, pois \'timeout\' não é uma opção padrão do fetch
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Erro na requisi莽茫o: ${response.statusText}`);
+                    throw new Error(`Erro na requisição: ${response.statusText}`);
                 }
 
                 const result = await response.json();
-                if (result.status === 'error') {
-                    throw new Error(result.message || 'Erro desconhecido do Apps Script');
+                if (result.status === \'error\') {
+                    throw new Error(result.message || \'Erro desconhecido do Apps Script\');
                 }
                 updateConnectionStatus(true);
                 return result.data;
             } catch (error) {
-                console.error('Erro ao chamar Apps Script:', error);
-                showNotification(`Erro: ${error.message}`, 'error');
+                console.error(\'Erro ao chamar Apps Script:\', error);
+                showNotification(`Erro: ${error.message}`, \'error\');
                 updateConnectionStatus(false);
                 return null;
             } finally {
@@ -700,76 +691,76 @@
             }
         }
 
-        // Simula莽茫o de dados para modo demonstra莽茫o
+        // Simulação de dados para modo demonstração
         let demoVehicles = [
-            { id: 'DEMO001', placa: 'ABC-1234', modelo: 'VW Gol', cliente: 'Maria Silva', telefone: '11987654321', responsavel: 'Fernando', observacoes: 'Troca de 贸leo e filtro', status: 'Aguardando Mec芒nico', entrada: '01/08/2025', historico: [], evidencias: [] },
-            { id: 'DEMO002', placa: 'XYZ-5678', modelo: 'Fiat Palio', cliente: 'Jo茫o Santos', telefone: '11999998888', responsavel: 'Gustavo', observacoes: 'Verificar barulho no motor', status: 'Em An谩lise (Aguardando Evid锚ncias)', entrada: '02/08/2025', historico: [], evidencias: [] },
-            { id: 'DEMO003', placa: 'DEF-9012', modelo: 'Chevrolet Onix', cliente: 'Ana Costa', telefone: '11977776666', responsavel: 'Marcelo', observacoes: 'Pintura do para-choque', status: 'Or莽amento Enviado ao Cliente', entrada: '03/08/2025', historico: [], evidencias: [] }
+            { id: \'DEMO001\', placa: \'ABC-1234\', modelo: \'VW Gol\', cliente: \'Maria Silva\', telefone: \'11987654321\', responsavel: \'Fernando\', observacoes: \'Troca de óleo e filtro\', status: \'Aguardando Mecânico\', entrada: \'01/08/2025\', historico: [], evidencias: [] },
+            { id: \'DEMO002\', placa: \'XYZ-5678\', modelo: \'Fiat Palio\', cliente: \'João Santos\', telefone: \'11999998888\', responsavel: \'Gustavo\', observacoes: \'Verificar barulho no motor\', status: \'Em Análise (Aguardando Evidências)\', entrada: \'02/08/2025\', historico: [], evidencias: [] },
+            { id: \'DEMO003\', placa: \'DEF-9012\', modelo: \'Chevrolet Onix\', cliente: \'Ana Costa\', telefone: \'11977776666\', responsavel: \'Marcelo\', observacoes: \'Pintura do para-choque\', status: \'Orçamento Enviado ao Cliente\', entrada: \'03/08/2025\', historico: [], evidencias: [] }
         ];
 
         async function handleDemoData(action, data) {
             await new Promise(resolve => setTimeout(resolve, 500)); // Simula delay da rede
             switch (action) {
-                case 'getVehicles':
+                case \'getVehicles\':
                     return demoVehicles;
-                case 'addVehicle':
-                    const newVehicle = { ...data, id: 'DEMO' + (demoVehicles.length + 1).toString().padStart(3, '0'), entrada: new Date().toLocaleDateString('pt-BR'), historico: [], evidencias: [] };
+                case \'addVehicle\':
+                    const newVehicle = { ...data, id: \'DEMO\' + (demoVehicles.length + 1).toString().padStart(3, \'0\'), entrada: new Date().toLocaleDateString(\'pt-BR\'), historico: [], evidencias: [] };
                     demoVehicles.push(newVehicle);
-                    showNotification('Ve铆culo adicionado (Demo)!', 'success');
+                    showNotification(\'Veículo adicionado (Demo)!\', \'success\');
                     return newVehicle;
-                case 'updateVehicleStatus':
+                case \'updateVehicleStatus\':
                     const vehicleToUpdate = demoVehicles.find(v => v.id === data.id);
                     if (vehicleToUpdate) {
                         vehicleToUpdate.status = data.newStatus;
-                        vehicleToUpdate.historico.push({ status: data.newStatus, data: new Date().toLocaleString('pt-BR'), nome: usuarioLogado });
-                        showNotification('Status atualizado (Demo)!', 'success');
+                        vehicleToUpdate.historico.push({ status: data.newStatus, data: new Date().toLocaleString(\'pt-BR\'), nome: usuarioLogado });
+                        showNotification(\'Status atualizado (Demo)!\', \'success\');
                         return vehicleToUpdate;
                     }
-                    showNotification('Ve铆culo n茫o encontrado (Demo)!', 'error');
+                    showNotification(\'Veículo não encontrado (Demo)!\', \'error\');
                     return null;
-                case 'updateVehicle':
+                case \'updateVehicle\':
                     const vehicleToEdit = demoVehicles.find(v => v.id === data.id);
                     if (vehicleToEdit) {
                         Object.assign(vehicleToEdit, data);
-                        showNotification('Ve铆culo editado (Demo)!', 'success');
+                        showNotification(\'Veículo editado (Demo)!\', \'success\');
                         return vehicleToEdit;
                     }
-                    showNotification('Ve铆culo n茫o encontrado (Demo)!', 'error');
+                    showNotification(\'Veículo não encontrado (Demo)!\', \'error\');
                     return null;
-                case 'deleteVehicle':
+                case \'deleteVehicle\':
                     demoVehicles = demoVehicles.filter(v => v.id !== data.id);
-                    showNotification('Ve铆culo exclu铆do (Demo)!', 'success');
+                    showNotification(\'Veículo excluído (Demo)!\', \'success\');
                     return { success: true };
-                case 'addEvidence':
+                case \'addEvidence\':
                     const vehicleForEvidence = demoVehicles.find(v => v.id === data.vehicleId);
                     if (vehicleForEvidence) {
-                        const newEvidence = { ...data, id: 'EVID' + (vehicleForEvidence.evidencias.length + 1), data: new Date().toLocaleDateString('pt-BR'), responsavel: usuarioLogado };
+                        const newEvidence = { ...data, id: \'EVID\' + (vehicleForEvidence.evidencias.length + 1), data: new Date().toLocaleDateString(\'pt-BR\'), responsavel: usuarioLogado };
                         vehicleForEvidence.evidencias.push(newEvidence);
-                        showNotification('Evid锚ncia adicionada (Demo)!', 'success');
+                        showNotification(\'Evidência adicionada (Demo)!\', \'success\');
                         return newEvidence;
                     }
-                    showNotification('Ve铆culo n茫o encontrado para evid锚ncia (Demo)!', 'error');
+                    showNotification(\'Veículo não encontrado para evidência (Demo)!\', \'error\');
                     return null;
                 default:
-                    showNotification('A莽茫o de demonstra莽茫o n茫o reconhecida.', 'error');
+                    showNotification(\'Ação de demonstração não reconhecida.\', \'error\');
                     return null;
             }
         }
 
-        // --- FUN脟脮ES DE RENDERIZA脟脙O DO DASHBOARD --- //
+        // --- FUNÇÕES DE RENDERIZAÇÃO DO DASHBOARD --- //
         async function loadVehicles() {
-            const vehicles = await callAppsScript('getVehicles');
+            const vehicles = await callAppsScript(\'getVehicles\');
             if (!vehicles) return;
 
             // Limpa as colunas e zera os contadores
-            document.querySelectorAll('.vehicle-list').forEach(list => list.innerHTML = '');
+            document.querySelectorAll(\'.vehicle-list\').forEach(list => list.innerHTML = \'\');
             Object.keys(statusMap).forEach(status => {
                 document.getElementById(`count-${status}`).textContent = 0;
             });
 
             // Preenche as colunas e atualiza os contadores
             vehicles.forEach(vehicle => {
-                const statusKey = vehicle.status; // Assume que o status do ve铆culo corresponde 脿s chaves do statusMap
+                const statusKey = vehicle.status; // Assume que o status do veículo corresponde às chaves do statusMap
                 const listElement = document.getElementById(`list-${statusKey}`);
                 if (listElement) {
                     const card = createVehicleCard(vehicle);
@@ -781,16 +772,16 @@
         }
 
         function createVehicleCard(vehicle) {
-            const card = document.createElement('div');
-            card.className = `vehicle-card ${statusMap[vehicle.status] ? 'status-' + statusMap[vehicle.status] : ''}`;
-            card.setAttribute('data-id', vehicle.id);
-            card.setAttribute('data-placa', vehicle.placa);
+            const card = document.createElement(\'div\');
+            card.className = `vehicle-card ${statusMap[vehicle.status] ? \'status-\' + statusMap[vehicle.status] : \'\'}`;
+            card.setAttribute(\'data-id\', vehicle.id);
+            card.setAttribute(\'data-placa\', vehicle.placa);
             card.innerHTML = `
-                <h4 class="font-bold text-lg mb-1">${vehicle.placa} - ${vehicle.modelo}</h4>
-                <p class="text-sm text-gray-600">Cliente: ${vehicle.cliente}</p>
-                <p class="text-sm text-gray-600">Respons谩vel: ${vehicle.responsavel || 'N茫o atribu铆do'}</p>
-                <div class="mt-3 flex justify-end">
-                    <button class="btn bg-blue-500 text-white px-3 py-1 text-sm" onclick="openVehicleDetailsModal('${vehicle.id}')">
+                <h4 class=\"font-bold text-lg mb-1\">${vehicle.placa} - ${vehicle.modelo}</h4>
+                <p class=\"text-sm text-gray-600\">Cliente: ${vehicle.cliente}</p>
+                <p class=\"text-sm text-gray-600\">Responsável: ${vehicle.responsavel || \'Não atribuído\'}</p>
+                <div class=\"mt-3 flex justify-end\">
+                    <button class=\"btn bg-blue-500 text-white px-3 py-1 text-sm\" onclick=\"openVehicleDetailsModal(\'${vehicle.id}\')\">
                         Detalhes
                     </button>
                 </div>
@@ -800,25 +791,25 @@
 
         // --- DRAG AND DROP (SORTABLEJS) --- //
         function setupSortable() {
-            document.querySelectorAll('.vehicle-list').forEach(list => {
+            document.querySelectorAll(\'.vehicle-list\').forEach(list => {
                 new Sortable(list, {
-                    group: 'vehicles',
+                    group: \'vehicles\',
                     animation: 150,
-                    ghostClass: 'dragging',
+                    ghostClass: \'dragging\',
                     onEnd: async function (evt) {
                         const vehicleId = evt.item.dataset.id;
-                        const oldStatusId = evt.from.closest('.status-column').dataset.status;
-                        const newStatusId = evt.to.closest('.status-column').dataset.status;
+                        const oldStatusId = evt.from.closest(\'.status-column\').dataset.status;
+                        const newStatusId = evt.to.closest(\'.status-column\').dataset.status;
 
                         if (oldStatusId !== newStatusId) {
-                            showNotification(`Movendo ${evt.item.dataset.placa} para ${newStatusId}...`, 'info');
-                            const success = await callAppsScript('updateVehicleStatus', { id: vehicleId, newStatus: newStatusId, user: usuarioLogado });
+                            showNotification(`Movendo ${evt.item.dataset.placa} para ${newStatusId}...`, \'info\');
+                            const success = await callAppsScript(\'updateVehicleStatus\', { id: vehicleId, newStatus: newStatusId, user: usuarioLogado });
                             if (success) {
-                                showNotification(`Ve铆culo ${evt.item.dataset.placa} movido para ${newStatusId}!`, 'success');
+                                showNotification(`Veículo ${evt.item.dataset.placa} movido para ${newStatusId}!`, \'success\');
                                 loadVehicles(); // Recarrega para atualizar contadores e estado
                             } else {
-                                showNotification(`Falha ao mover ve铆culo ${evt.item.dataset.placa}.`, 'error');
-                                // Reverter a mudan莽a visual se a API falhar
+                                showNotification(`Falha ao mover veículo ${evt.item.dataset.placa}.`, \'error\');
+                                // Reverter a mudança visual se a API falhar
                                 evt.from.appendChild(evt.item); 
                             }
                         }
@@ -827,61 +818,63 @@
             });
         }
 
-        // --- MODAIS E FORMUL脕RIOS --- //
+        // --- MODAIS E FORMULÁRIOS --- //
 
         // Login do thIAguinho
+        // A função login foi movida para o escopo global para ser acessível pelos onclicks no HTML
         window.login = function(nome) {
             usuarioLogado = nome;
-            userDisplay.textContent = nome;
-            userScreen.classList.add('hidden');
-            app.classList.remove('hidden');
+            // userDisplay.textContent = nome; // Este elemento não existe no HTML atual
+            userScreen.classList.add(\'hidden\');
+            app.classList.remove(\'hidden\');
             loadVehicles();
-            setupSortable(); // Inicializa o SortableJS ap贸s o login
+            setupSortable(); // Inicializa o SortableJS após o login
             setInterval(loadVehicles, 30000); // Atualiza a cada 30 segundos
             updateLastUpdate();
         };
 
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener(\'click\', () => {
             usuarioLogado = null;
-            app.classList.add('hidden');
-            userScreen.classList.remove('hidden');
-            showNotification('Sess茫o encerrada.', 'info');
+            app.classList.add(\'hidden\');
+            userScreen.classList.remove(\'hidden\');
+            showNotification(\'Sessão encerrada.\', \'info\');
         });
 
-        // Adicionar Ve铆culo
-        addVehicleBtn.addEventListener('click', () => {
+        // Adicionar Veículo
+        addVehicleBtn.addEventListener(\'click\', () => {
             addVehicleForm.reset();
-            addVehicleModal.classList.remove('hidden');
+            addVehicleModal.classList.remove(\'hidden\');
         });
 
-        closeAddModal.addEventListener('click', () => {
-            addVehicleModal.classList.add('hidden');
+        closeAddModal.addEventListener(\'click\', () => {
+            addVehicleModal.classList.add(\'hidden\');
         });
 
-        addVehicleForm.addEventListener('submit', async (e) => {
+        addVehicleForm.addEventListener(\'submit\', async (e) => {
             e.preventDefault();
             const formData = new FormData(addVehicleForm);
             const vehicleData = Object.fromEntries(formData.entries());
-            vehicleData.status = 'Aguardando Mec芒nico'; // Status inicial
-            vehicleData.entrada = new Date().toLocaleDateString('pt-BR');
-            vehicleData.responsavel = vehicleData.responsavel || 'N茫o atribu铆do';
+            vehicleData.status = \'Aguardando Mecânico\'; // Status inicial
+            vehicleData.entrada = new Date().toLocaleDateString(\'pt-BR\');
+            vehicleData.responsavel = vehicleData.responsavel || \'Não atribuído\';
 
-            showNotification('Adicionando ve铆culo...', 'info');
-            const newVehicle = await callAppsScript('addVehicle', { ...vehicleData, user: usuarioLogado });
+            showNotification(\'Adicionando veículo...\', \'info\');
+            const newVehicle = await callAppsScript(\'addVehicle\', { ...vehicleData, user: usuarioLogado });
             if (newVehicle) {
-                showNotification(`Ve铆culo ${newVehicle.placa} adicionado com sucesso!`, 'success');
-                addVehicleModal.classList.add('hidden');
+                showNotification(`Veículo ${newVehicle.placa} adicionado com sucesso!`, \'success\');
+                addVehicleModal.classList.add(\'hidden\');
                 loadVehicles();
             }
         });
 
-        // Detalhes do Ve铆culo
-        async function openVehicleDetailsModal(id) {
+        // Detalhes do Veículo
+        window.openVehicleDetailsModal = async function(id) { // Tornar global para onclick
             currentVehicleId = id;
-            showNotification('Carregando detalhes...', 'info');
-            const vehicle = (await callAppsScript('getVehicles')).find(v => v.id === id);
+            showNotification(\'Carregando detalhes...\', \'info\');
+            const vehicles = await callAppsScript(\'getVehicles\');
+            const vehicle = vehicles ? vehicles.find(v => v.id === id) : null;
             if (!vehicle) {
-                showNotification('Ve铆culo n茫o encontrado.', 'error');
+                showNotification(\'Veículo não encontrado.\', \'error\');
                 return;
             }
 
@@ -890,55 +883,56 @@
                 <p><b>Placa:</b> ${vehicle.placa}</p>
                 <p><b>Modelo:</b> ${vehicle.modelo}</p>
                 <p><b>Cliente:</b> ${vehicle.cliente}</p>
-                <p><b>Telefone:</b> ${vehicle.telefone || 'N/A'}</p>
-                <p><b>Status:</b> <span class="status-badge bg-${statusColors[vehicle.status]}">${vehicle.status}</span></p>
-                <p><b>Respons谩vel:</b> ${vehicle.responsavel || 'N/A'}</p>
+                <p><b>Telefone:</b> ${vehicle.telefone || \'N/A\'}</p>
+                <p><b>Status:</b> <span class=\"status-badge bg-${statusColors[vehicle.status]}\">${vehicle.status}</span></p>
+                <p><b>Responsável:</b> ${vehicle.responsavel || \'N/A\'}</p>
                 <p><b>Entrada:</b> ${vehicle.entrada}</p>
-                <p><b>Observa莽玫es:</b> ${vehicle.observacoes || 'Nenhuma'}</p>
+                <p><b>Observações:</b> ${vehicle.observacoes || \'Nenhuma\'}</p>
 
-                <h3 class="font-bold text-lg mt-4 mb-2">Hist贸rico</h3>
-                <div class="space-y-2">
+                <h3 class=\"font-bold text-lg mt-4 mb-2\">Histórico</h3>
+                <div class=\"space-y-2\">
                     ${vehicle.historico && vehicle.historico.length > 0 
-                        ? vehicle.historico.map(h => `<div class="history-item">${h.status} por ${h.nome} em ${h.data}</div>`).join('')
-                        : '<p class="text-gray-500">Nenhum hist贸rico dispon铆vel.</p>'
+                        ? vehicle.historico.map(h => `<div class=\"history-item\">${h.status} por ${h.nome} em ${h.data}</div>`).join(\'\')
+                        : \'<p class=\"text-gray-500\">Nenhum histórico disponível.</p>\'
                     }
                 </div>
 
-                <h3 class="font-bold text-lg mt-4 mb-2">Evid锚ncias</h3>
-                <div class="space-y-2">
+                <h3 class=\"font-bold text-lg mt-4 mb-2\">Evidências</h3>
+                <div class=\"space-y-2\">
                     ${vehicle.evidencias && vehicle.evidencias.length > 0 
                         ? vehicle.evidencias.map(e => `
-                            <div class="evidence-item">
+                            <div class=\"evidence-item\">
                                 <p><b>Problema:</b> ${e.problema}</p>
-                                <p><b>Pe莽as:</b> ${e.pecas || 'N/A'}</p>
-                                <p><b>Valor:</b> R$ ${e.valor ? parseFloat(e.valor).toFixed(2) : '0.00'}</p>
-                                <p><b>Respons谩vel:</b> ${e.responsavel} em ${e.data}</p>
+                                <p><b>Peças:</b> ${e.pecas || \'N/A\'}</p>
+                                <p><b>Valor:</b> R$ ${e.valor ? parseFloat(e.valor).toFixed(2) : \'0.00\'}</p>
+                                <p><b>Responsável:</b> ${e.responsavel} em ${e.data}</p>
                                 ${e.midias && e.midias.length > 0 ? `
-                                    <div class="file-preview mt-2">
+                                    <div class=\"file-preview mt-2\">
                                         ${e.midias.map(m => {
-                                            const isVideo = m.endsWith('.mp4') || m.endsWith('.webm') || m.endsWith('.ogg');
+                                            const isVideo = m.endsWith(\'.mp4\') || m.endsWith(\'.webm\') || m.endsWith(\'.ogg\');
                                             return isVideo 
-                                                ? `<video src="${m}" controls></video>` 
-                                                : `<img src="${m}" alt="Evid锚ncia">`;
-                                        }).join('')}
+                                                ? `<video src=\"${m}\" controls></video>` 
+                                                : `<img src=\"${m}\" alt=\"Evidência\">`;
+                                        }).join(\'\')}
                                     </div>
-                                ` : '<p class="text-gray-500">Nenhuma m铆dia anexada.</p>'}
+                                ` : \'<p class=\"text-gray-500\">Nenhuma mídia anexada.</p>\''}
                             </div>
-                        `).join('')
-                        : '<p class="text-gray-500">Nenhuma evid锚ncia anexada.</p>'
+                        `).join(\'\')
+                        : \'<p class=\"text-gray-500\">Nenhuma evidência anexada.</p>\'
                     }
                 </div>
             `;
-            vehicleDetailsModal.classList.remove('hidden');
+            vehicleDetailsModal.classList.remove(\'hidden\');
         }
 
-        document.getElementById('closeDetailsModal').addEventListener('click', () => {
-            vehicleDetailsModal.classList.add('hidden');
+        document.getElementById(\'closeDetailsModal\').addEventListener(\'click\', () => {
+            vehicleDetailsModal.classList.add(\'hidden\');
         });
 
-        // Editar Ve铆culo
-        editVehicleBtn.addEventListener('click', async () => {
-            const vehicle = (await callAppsScript('getVehicles')).find(v => v.id === currentVehicleId);
+        // Editar Veículo
+        editVehicleBtn.addEventListener(\'click\', async () => {
+            const vehicles = await callAppsScript(\'getVehicles\');
+            const vehicle = vehicles ? vehicles.find(v => v.id === currentVehicleId) : null;
             if (vehicle) {
                 editVehicleId.value = vehicle.id;
                 editPlaca.value = vehicle.placa;
@@ -947,75 +941,75 @@
                 editTelefone.value = vehicle.telefone;
                 editResponsavel.value = vehicle.responsavel;
                 editObservacoes.value = vehicle.observacoes;
-                vehicleDetailsModal.classList.add('hidden');
-                editVehicleModal.classList.remove('hidden');
+                vehicleDetailsModal.classList.add(\'hidden\');
+                editVehicleModal.classList.remove(\'hidden\');
             }
         });
 
-        closeEditModal.addEventListener('click', () => {
-            editVehicleModal.classList.add('hidden');
+        closeEditModal.addEventListener(\'click\', () => {
+            editVehicleModal.classList.add(\'hidden\');
         });
 
-        editVehicleForm.addEventListener('submit', async (e) => {
+        editVehicleForm.addEventListener(\'submit\', async (e) => {
             e.preventDefault();
             const formData = new FormData(editVehicleForm);
             const updatedData = Object.fromEntries(formData.entries());
-            updatedData.user = usuarioLogado; // Adiciona o usu谩rio que fez a altera莽茫o
+            updatedData.user = usuarioLogado; // Adiciona o usuário que fez a alteração
 
-            showNotification('Salvando altera莽玫es...', 'info');
-            const result = await callAppsScript('updateVehicle', updatedData);
+            showNotification(\'Salvando alterações...\', \'info\');
+            const result = await callAppsScript(\'updateVehicle\', updatedData);
             if (result) {
-                showNotification(`Ve铆culo ${updatedData.placa} atualizado com sucesso!`, 'success');
-                editVehicleModal.classList.add('hidden');
+                showNotification(`Veículo ${updatedData.placa} atualizado com sucesso!`, \'success\');
+                editVehicleModal.classList.add(\'hidden\');
                 loadVehicles();
             }
         });
 
-        // Excluir Ve铆culo
-        deleteVehicleBtn.addEventListener('click', async () => {
-            if (confirm('Tem certeza que deseja excluir este ve铆culo? Esta a莽茫o 茅 irrevers铆vel.')) {
-                showNotification('Excluindo ve铆culo...', 'info');
-                const result = await callAppsScript('deleteVehicle', { id: currentVehicleId, user: usuarioLogado });
+        // Excluir Veículo
+        deleteVehicleBtn.addEventListener(\'click\', async () => {
+            if (confirm(\'Tem certeza que deseja excluir este veículo? Esta ação é irreversível.\')) {
+                showNotification(\'Excluindo veículo...\', \'info\');
+                const result = await callAppsScript(\'deleteVehicle\', { id: currentVehicleId, user: usuarioLogado });
                 if (result && result.success) {
-                    showNotification('Ve铆culo exclu铆do com sucesso!', 'success');
-                    vehicleDetailsModal.classList.add('hidden');
+                    showNotification(\'Veículo excluído com sucesso!\', \'success\');
+                    vehicleDetailsModal.classList.add(\'hidden\');
                     loadVehicles();
                 }
             }
         });
 
-        // Adicionar Evid锚ncia
-        addEvidenceBtn.addEventListener('click', () => {
+        // Adicionar Evidência
+        addEvidenceBtn.addEventListener(\'click\', () => {
             addEvidenceForm.reset();
-            evidencePlacaInput.value = currentVehicleId; // ID do ve铆culo, n茫o a placa
-            evidencePreview.innerHTML = '';
-            vehicleDetailsModal.classList.add('hidden');
-            addEvidenceModal.classList.remove('hidden');
+            evidencePlacaInput.value = currentVehicleId; // ID do veículo, não a placa
+            evidencePreview.innerHTML = \'\';
+            vehicleDetailsModal.classList.add(\'hidden\');
+            addEvidenceModal.classList.remove(\'hidden\');
         });
 
-        closeAddEvidenceModal.addEventListener('click', () => {
-            addEvidenceModal.classList.add('hidden');
+        closeAddEvidenceModal.addEventListener(\'click\', () => {
+            addEvidenceModal.classList.add(\'hidden\');
         });
 
-        evidenceMidiasInput.addEventListener('change', function() {
-            evidencePreview.innerHTML = '';
+        evidenceMidiasInput.addEventListener(\'change\', function() {
+            evidencePreview.innerHTML = \'\';
             Array.from(this.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'img');
+                    const el = document.createElement(file.type.startsWith(\'video/\') ? \'video\' : \'img\');
                     el.src = e.target.result;
-                    el.controls = file.type.startsWith('video/');
-                    el.style.width = '100px';
-                    el.style.height = '100px';
-                    el.style.objectFit = 'cover';
-                    el.style.borderRadius = '8px';
+                    el.controls = file.type.startsWith(\'video/\');
+                    el.style.width = \'100px\';
+                    el.style.height = \'100px\';
+                    el.style.objectFit = \'cover\';
+                    el.style.borderRadius = \'8px\';
                     evidencePreview.appendChild(el);
                 };
                 reader.readAsDataURL(file);
             });
         });
 
-        addEvidenceForm.addEventListener('submit', async (e) => {
+        addEvidenceForm.addEventListener(\'submit\', async (e) => {
             e.preventDefault();
             const formData = new FormData(addEvidenceForm);
             const evidenceData = Object.fromEntries(formData.entries());
@@ -1027,48 +1021,47 @@
             const filePromises = Array.from(files).map(file => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result.split(',')[1] });
+                    reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result.split(\'\\,\')[1] });
                     reader.onerror = error => reject(error);
                     reader.readAsDataURL(file);
                 });
             });
 
-            showNotification('Adicionando evid锚ncia...', 'info');
+            showNotification(\'Adicionando evidência...\', \'info\');
             try {
                 const uploadedFiles = await Promise.all(filePromises);
                 evidenceData.midias = uploadedFiles; // Adiciona os dados dos arquivos
 
-                const result = await callAppsScript('addEvidence', evidenceData);
+                const result = await callAppsScript(\'addEvidence\', evidenceData);
                 if (result) {
-                    showNotification('Evid锚ncia adicionada com sucesso!', 'success');
-                    addEvidenceModal.classList.add('hidden');
+                    showNotification(\'Evidência adicionada com sucesso!\', \'success\');
+                    addEvidenceModal.classList.add(\'hidden\');
                     loadVehicles();
                 }
             } catch (error) {
-                showNotification(`Erro ao fazer upload da m铆dia: ${error.message}`, 'error');
-                console.error('Erro de upload:', error);
+                showNotification(`Erro ao fazer upload da mídia: ${error.message}`, \'error\');
+                console.error(\'Erro de upload:\', error);
             }
         });
 
         // --- EVENT LISTENERS GERAIS --- //
-        refreshBtn.addEventListener('click', loadVehicles);
+        refreshBtn.addEventListener(\'click\', loadVehicles);
 
         // Esconder modais ao clicar fora
-        window.addEventListener('click', (e) => {
-            if (e.target === addVehicleModal) addVehicleModal.classList.add('hidden');
-            if (e.target === vehicleDetailsModal) vehicleDetailsModal.classList.add('hidden');
-            if (e.target === addEvidenceModal) addEvidenceModal.classList.add('hidden');
-            if (e.target === editVehicleModal) editVehicleModal.classList.add('hidden');
+        window.addEventListener(\'click\', (e) => {
+            if (e.target === addVehicleModal) addVehicleModal.classList.add(\'hidden\');
+            if (e.target === vehicleDetailsModal) vehicleDetailsModal.classList.add(\'hidden\');
+            if (e.target === addEvidenceModal) addEvidenceModal.classList.add(\'hidden\');
+            if (e.target === editVehicleModal) editVehicleModal.classList.add(\'hidden\');
         });
 
-        // Inicializa莽茫o
-        document.addEventListener('DOMContentLoaded', () => {
-            // O login 茅 feito pela tela de sele莽茫o de usu谩rio do thIAguinho
-            // loadVehicles(); // N茫o carrega ve铆culos antes do login
+        // Inicialização
+        document.addEventListener(\'DOMContentLoaded\', () => {
+            // O login é feito pela tela de seleção de usuário do thIAguinho
+            // loadVehicles(); // Não carrega veículos antes do login
             updateConnectionStatus(API_CONFIG.demoMode); // Define status inicial
             updateLastUpdate();
         });
     </script>
 </body>
 </html>
-
